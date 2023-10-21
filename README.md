@@ -12,7 +12,7 @@ git clone <repository-url>
 ```
 2. Navigate to the Project Directory: Change your current directory to the project folder.
 ```
-cd cornell-fintech-sentiment-analysis
+cd CFTstocksentiment
 cd frontend
 ```
 3. Install Dependencies: Install the project dependencies using Yarn.
