@@ -25,35 +25,16 @@ yarn start
 ```
 5. Access the Application: Open your web browser and navigate to http://localhost:3000 to access the application.
 
-   ## Project Structure
+## Project Structure
 The project is structured as follows:
 
-- `src/`: This directory contains the source code for the application.
-- `public/`: Static assets and the HTML entry point.
+- `frontend/`: This directory contains the source code for the application.
+- `frontend/public`: Static assets and the HTML entry point.
+- `frontend/src`: This directory contains the source code for the application.
 - `package.json`: This file contains project metadata and a list of dependencies.
 - `yarn.lock`: A lock file that specifies exact versions of dependencies.
 
 ## Features
-- Stock sentiment analysis based on user-defined criteria.
-- Integration with various data sources for financial news and social media sentiment.
-- Real-time stock price tracking.
-- User-friendly interface for data visualization.
-
-## Contributing
-If you'd like to contribute to this project, please follow the guidelines in our [CONTRIBUTING.md](CONTRIBUTING.md) file.
-
-## License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Support
-If you encounter any issues or have questions, feel free to reach out to us at [email@example.com].
-
-## Acknowledgements
-We would like to thank the following libraries and APIs that have made this project possible:
-- [React](https://reactjs.org/)
-- [Yarn](https://yarnpkg.com/)
-- [Financial Data APIs]
-- [News APIs]
-- [Sentiment Analysis APIs]
+-TBD
 
 Thank you for using the Cornell Fintech Club Stock Sentiment Analysis Tool!
