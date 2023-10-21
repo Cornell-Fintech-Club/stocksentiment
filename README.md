@@ -28,9 +28,8 @@ yarn start
 ## Project Structure
 The project is structured as follows:
 
-- `frontend/`: This directory contains the source code for the application.
-- `frontend/public`: Static assets and the HTML entry point.
-- `frontend/src`: This directory contains the source code for the application.
+- `frontend/`: This directory contains the frontend code for the application.
+- `backend/`: This directory contains the backend code for the application.
 - `package.json`: This file contains project metadata and a list of dependencies.
 - `yarn.lock`: A lock file that specifies exact versions of dependencies.
 
