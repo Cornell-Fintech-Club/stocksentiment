@@ -7,20 +7,18 @@ Welcome to the Cornell Fintech Club Stock Sentiment Analysis Tool! This tool is 
 To get started with this project, follow these steps:
 
 1. **Clone the Repository:** Start by cloning this repository to your local machine using Git.
-
-   ```
-   git clone <repository-url>
-   ```
-
+```
+git clone <repository-url>
+```
 2. Navigate to the Project Directory: Change your current directory to the project folder.
 ```
 cd cornell-fintech-sentiment-analysis
 cd frontend
 ```
 3. Install Dependencies: Install the project dependencies using Yarn.
-   ```
-   yarn install
-   ```
+```
+yarn install
+```
 4. Run the Development Server: Start the development server to run the project locally.
 ```
 yarn start
