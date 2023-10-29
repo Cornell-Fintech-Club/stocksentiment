@@ -1,5 +1,5 @@
 export default function Table() {
-    const data = [
+    const data = [ // Scalable table data
       {
         id: 1,
         ticker: "AAPL",
@@ -57,14 +57,14 @@ export default function Table() {
       },
     ];
   
-    return (
+    return ( 
       <div>
         <div className="overflow-x-auto">
           <table className="table">
             {/* head */}
-            <thead>
-              <tr>
-                <th></th>
+            <thead>  {/* Column names */}
+              <tr> 
+                <th></th> 
                 <th>Ticker Symbol</th>
                 <th>Company Name</th>
                 <th>Last Price</th>
@@ -74,8 +74,8 @@ export default function Table() {
                 <th>Volume</th>
               </tr>
             </thead>
-            <tbody>
-              {data.map((item) => (
+            <tbody> {/* table data */}
+              {data.map((item) => ( 
                 <tr key={item.id} className="hover">
                   <th>
                     <a href={item.link}>{item.id}</a>
