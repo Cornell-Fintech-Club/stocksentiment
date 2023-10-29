@@ -2,45 +2,58 @@ export default function Table() {
     const data = [
       {
         id: 1,
-        name: "Cy Ganderton",
-        job: "Quality Control Specialist",
-        color: "Blue",
-        link: "https://www.tesla.com",
+        ticker: "AAPL",
+        company: "Apple Inc.",
+        price: 148.48,
+        change: -0.23,
+        changePercent: -0.15,
+        sentiment: 0.75,
+        volume: 56371661,
+        link: "https://www.apple.com",
       },
       {
         id: 2,
-        name: "Hart Hagerty",
-        job: "Desktop Support Technician",
-        color: "Purple",
+        ticker: "GOOG",
+        company: "Alphabet Inc.",
+        price: 2676.59,
+        change: 5.67,
+        changePercent: 0.21,
+        sentiment: 0.82,
+        volume: 1079863,
         link: "https://www.google.com",
       },
       {
         id: 3,
-        name: "Brice Swyre",
-        job: "Tax Accountant",
-        color: "Red",
+        ticker: "MSFT",
+        company: "Microsoft Corporation",
+        price: 305.76,
+        change: 0.12,
+        changePercent: 0.04,
+        sentiment: 0.68,
+        volume: 17529622,
         link: "https://www.microsoft.com",
       },
       {
         id: 4,
-        name: "Lena Kuehnel",
-        job: "Software Engineer",
-        color: "Green",
-        link: "https://www.apple.com",
-      },
-      {
-        id: 5,
-        name: "Maggie Mcgillivray",
-        job: "Marketing Manager",
-        color: "Magenta",
+        ticker: "AMZN",
+        company: "Amazon.com, Inc.",
+        price: 3346.83,
+        change: -9.53,
+        changePercent: -0.28,
+        sentiment: 0.91,
+        volume: 2452626,
         link: "https://www.amazon.com",
       },
       {
-        id: 6,
-        name: "Landon Mccarthy",
-        job: "Sales Representative",
-        color: "Carnellian",
-        link: "https://www.facebook.com",
+        id: 5,
+        ticker: "TSLA",
+        company: "Tesla, Inc.",
+        price: 687.20,
+        change: -1.80,
+        changePercent: -0.26,
+        sentiment: 0.62,
+        volume: 13083117,
+        link: "https://www.tesla.com",
       },
     ];
   
@@ -52,9 +65,13 @@ export default function Table() {
             <thead>
               <tr>
                 <th></th>
-                <th>Name</th>
-                <th>Job</th>
-                <th>Favorite Color</th>
+                <th>Ticker Symbol</th>
+                <th>Company Name</th>
+                <th>Last Price</th>
+                <th>Change</th>
+                <th>Change %</th>
+                <th>Sentiment Score</th>
+                <th>Volume</th>
               </tr>
             </thead>
             <tbody>
@@ -64,13 +81,25 @@ export default function Table() {
                     <a href={item.link}>{item.id}</a>
                   </th>
                   <td>
-                    <a href={item.link}>{item.name}</a>
+                    <a href={item.link}>{item.ticker}</a>
                   </td>
                   <td>
-                    <a href={item.link}>{item.job}</a>
+                    <a href={item.link}>{item.company}</a>
                   </td>
                   <td>
-                    <a href={item.link}>{item.color}</a>
+                    <a href={item.link}>{item.price}</a>
+                  </td>
+                  <td>
+                    <a href={item.link}>{item.change}</a>
+                  </td>
+                  <td>
+                    <a href={item.link}>{item.changePercent}%</a>
+                  </td>
+                  <td>
+                    <a href={item.link}>{item.sentiment}</a>
+                  </td>
+                  <td>
+                    <a href={item.link}>{item.volume}</a>
                   </td>
                 </tr>
               ))}
