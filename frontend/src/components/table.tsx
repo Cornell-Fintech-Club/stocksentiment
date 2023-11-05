@@ -59,6 +59,7 @@ export default function Table() {
   
     return ( 
       <div>
+        <div style={{ maxWidth: '80%', margin: '0 auto' }}>
         <div className="overflow-x-auto">
           <table className="table">
             {/* head */}
@@ -106,6 +107,7 @@ export default function Table() {
             </tbody>
           </table>
         </div>
+      </div>
       </div>
     );
   }
