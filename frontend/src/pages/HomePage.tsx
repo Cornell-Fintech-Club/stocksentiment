@@ -1,8 +1,9 @@
-import FooterComp from '../components/FooterComp';
+import NavBar from "../components/NavBar";
 
 export default function HomePage() {
   return (
-    <div className="">
+    <div>
+      <NavBar />
       <h1 className="text-5xl font-semibold px-4 py-2">Hello World!</h1>
       <button className="btn btn-secondary">Example</button>
 
