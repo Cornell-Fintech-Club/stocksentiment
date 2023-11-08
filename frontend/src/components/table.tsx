@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import EquityPieChart from './EquityPieChart';
+
 
 interface IStock {
   id: number;
@@ -11,6 +13,7 @@ interface IStock {
   changePercent: number;
   sentiment: number;
   volume: number;
+  totalValue: number
   link: string;
 }
 
@@ -111,16 +114,18 @@ export default function Table() {
       // Check if the API response is valid
       if (response.data['Global Quote']) {
         const quote = response.data['Global Quote'];
+        const price = parseFloat(quote['05. price'])
         const newStock: IStock = {
           id: stocks.length + 1,
           ticker: quote['01. symbol'],
           company: newStockInput.company, // Alpha Vantage does not provide the company name in GLOBAL_QUOTE
-          boughtInPrice: parseFloat(quote['05. price']), // use the input price as the boughtInPrice
+          boughtInPrice: price, // use the input price as the boughtInPrice
           currentPrice: parseFloat(quote['05. price']), // fetched current price
           change: parseFloat(quote['09. change']),
           changePercent: parseFloat(quote['10. change percent']),
           sentiment: 0, // You'll need to define where to get this from
           volume: parseInt(newStockInput.volume, 10),
+          totalValue: price * parseFloat(volume),
           link: '#' // Define how you want to set the link
         };
 
@@ -152,6 +157,7 @@ export default function Table() {
             changePercent: parseFloat((Math.random() * 100).toFixed(2)),
             sentiment: parseFloat((Math.random() * 100).toFixed(2)),
             volume: Math.floor(Math.random() * 10000),
+            totalValue: parseFloat(randomPrice) * parseFloat(volume),
             link: '#'
           };
         };
@@ -222,6 +228,7 @@ export default function Table() {
               <th>Company Name</th>
               <th>Bought-In Price</th>
               <th>Current Price</th>
+              <th>Value</th>
               <th>Change</th>
               <th>Change %</th>
               <th>Sentiment Score</th>
@@ -238,10 +245,12 @@ export default function Table() {
                       <td>{stock.company}</td>
                       <td>${stock.boughtInPrice.toFixed(2)}</td>
                       <td>${stock.currentPrice.toFixed(2)}</td>
+                      <td>${stock.totalValue}</td>
                       <td>{stock.change}</td>
                       <td>{stock.changePercent}%</td>
                       <td>{stock.sentiment}</td>
                       <td>{stock.volume}</td>
+
                       <td>
                         <button onClick={() => handleDeleteStock(stock.ticker)} className="btn btn-error">
                           Delete
@@ -259,6 +268,7 @@ export default function Table() {
             </tbody>
           </table>
         </div>
+        <EquityPieChart stocks={filteredStocks} />
       </div>
   );
 }
