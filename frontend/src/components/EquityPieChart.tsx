@@ -2,7 +2,6 @@ import React from 'react';
 import { Pie } from 'react-chartjs-2';
 import 'chart.js/auto';
 
-// Define the props type if you're using TypeScript
 interface EquityPieChartProps {
     stocks: {
         ticker: string;

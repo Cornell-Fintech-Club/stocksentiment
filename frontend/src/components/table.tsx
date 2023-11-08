@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import EquityPieChart from './EquityPieChart';
-
+import StockHistoryGraph from './StockHistoryGraph';
 
 interface IStock {
   id: number;
@@ -40,12 +40,16 @@ export default function Table() {
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-
+  const [selectedTicker, setSelectedTicker] = useState<string | null>(null);
   // Function to handle search query changes
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value.toLowerCase());
   };
 
+  // Add a click handler to set the selected ticker
+  const handleTickerClick = (ticker: string) => {
+    setSelectedTicker(ticker);
+  };
   // Filtered stocks based on search query
   const filteredStocks = stocks.filter(
       (stock) =>
@@ -103,9 +107,9 @@ export default function Table() {
       }
 
       // Construct the API endpoint with the API key and ticker symbol
-      const apiKey = '7GQ7D1K0K5YUM58O';
       const query = newStockInput.ticker;
       const volume = newStockInput.volume;
+      const apiKey = '7GQ7D1K0K5YUM58O';
       const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${query}&apikey=${apiKey}`;
 
       // Fetch stock data from Alpha Vantage
@@ -123,10 +127,10 @@ export default function Table() {
           currentPrice: parseFloat(quote['05. price']), // fetched current price
           change: parseFloat(quote['09. change']),
           changePercent: parseFloat(quote['10. change percent']),
-          sentiment: 0, // You'll need to define where to get this from
+          sentiment: 0, //
           volume: parseInt(newStockInput.volume, 10),
           totalValue: price * parseFloat(volume),
-          link: '#' // Define how you want to set the link
+          link: '#' //
         };
 
         // Update stocks state
@@ -241,7 +245,7 @@ export default function Table() {
                 filteredStocks.map((stock) => (
                     <tr key={stock.id}>
                       <th>{stock.id}</th>
-                      <td>{stock.ticker}</td>
+                      <td onClick={() => handleTickerClick(stock.ticker)}>{stock.ticker}</td>
                       <td>{stock.company}</td>
                       <td>${stock.boughtInPrice.toFixed(2)}</td>
                       <td>${stock.currentPrice.toFixed(2)}</td>
@@ -268,7 +272,14 @@ export default function Table() {
             </tbody>
           </table>
         </div>
-        <EquityPieChart stocks={filteredStocks} />
+        <div className="charts-container" style={{ display: 'flex', justifyContent: 'space-around' }}>
+          <div style={{ width: '50%' }}>
+            <EquityPieChart stocks={filteredStocks} />
+          </div>
+          <div style={{ width: '80%' }}>
+            {selectedTicker && <StockHistoryGraph ticker={selectedTicker} />}
+          </div>
+        </div>
       </div>
   );
 }
