@@ -1,6 +1,9 @@
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 const NavBar = () => {
+    const location = useLocation();
+
     return (
         <div className="navbar bg-base-100">
             <div className="navbar-start">
@@ -19,8 +22,9 @@ const NavBar = () => {
             </div>
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1">
-                    <li><a>Home</a></li>
+                    <li><Link to="/" className={location.pathname === '/' ? 'active' : ''}>Home</Link></li>
                     <li><a>Analysis</a></li>
+                    <li><Link to="/news" className={location.pathname === '/news' ? 'active' : ''}>News</Link></li>
                     <li><a>About Us</a></li>
                     <li><a>Contact</a></li>
                 </ul>

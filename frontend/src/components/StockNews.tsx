@@ -21,15 +21,16 @@ const StockNews = () => {
         return () => clearInterval(interval);
     }, []);
     return (
-        <div className="carousel carousel-center rounded-box w-6/12">{createNewsCards(data)}</div >
+        <div className="mx-8">
+            <div className="carousel carousel-end rounded-box w-full flex items-stretch">{createNewsCards(data)}</div>
+        </div>
     )
 }
 function createNewsCards(data: string | any[]) {
     const res_news_cards = []
     for (var i = 0; i < data.length; i++) {
         var news_article = data[i];
-        // <p>{news_article.category} {news_article.datetime}</p
-        res_news_cards.push(<div className="carousel-item"><NewsCard category={news_article.category}
+        res_news_cards.push(<div className="carousel-item w-1/4 h-auto flex-1"><NewsCard category={news_article.category}
             date={news_article.datetime} image={news_article.image} summary={news_article.summary} headline={news_article.headline}
             source={news_article.source} url={news_article.url}
         /> </div>);
