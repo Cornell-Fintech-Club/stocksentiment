@@ -1,3 +1,4 @@
+import NavBar from "../components/NavBar";
 import SearchBar from "../components/SearchBar";
 import Table from "../components/table";
 
