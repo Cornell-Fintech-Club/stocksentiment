@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import NewsCard from './NewsCard';
+import NavBar from './NavBar';
 
 const StockNews = () => {
     const [data, setData] = useState([]);
@@ -20,10 +21,12 @@ const StockNews = () => {
 
         return () => clearInterval(interval);
     }, []);
-    return (
+    return (<div>
+        <NavBar />
         <div className="mx-8">
             <div className="carousel carousel-end rounded-box w-full flex items-stretch">{createNewsCards(data)}</div>
         </div>
+    </div>
     )
 }
 function createNewsCards(data: string | any[]) {

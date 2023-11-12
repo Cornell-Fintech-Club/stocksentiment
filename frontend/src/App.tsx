@@ -8,7 +8,6 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <NavBar />
         <Routes>
           <Route index element={<HomePage />} />
           <Route path="/news" element={<StockNews />} />
