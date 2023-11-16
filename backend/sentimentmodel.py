@@ -1,4 +1,3 @@
-from openai import OpenAI
 import requests
 import json
 import os
@@ -10,8 +9,7 @@ load_dotenv()
 apikey = os.getenv('apikey')
 apiend = os.getenv('apiend')
 
-
-def generate_chat_completion(messages, apikey, apiend, model="gpt-4", temperature=1, max_tokens=None):
+def generate_chat_completion(messages, apikey=apikey, apiend=apiend, model="gpt-3.5-turbo", temperature=1, max_tokens=None):
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {apikey}",
@@ -20,7 +18,8 @@ def generate_chat_completion(messages, apikey, apiend, model="gpt-4", temperatur
     data = {
         "model": model,
         "messages": messages,
-        "temperature": temperature,
+        "temperature": temperature
+      #  "response_format": {"type": "json_object"} #Only on GPT-4??
     }
 
     if max_tokens is not None:
@@ -33,9 +32,14 @@ def generate_chat_completion(messages, apikey, apiend, model="gpt-4", temperatur
     else:
         raise Exception(f"Error {response.status_code}: {response.text}")
 
-messages = [
-            {"role": "system", "content": "Hello, how are you?"},
-            {"role": "user", "content": prompt}
-        ]
 
-generate_chat_completion()
+
+while True:
+
+    user_input = input("User: ")
+    messages=[
+        {"role": "system", "content": "You are a Goldman Sachs managing director, assign a stock sentiment value for this text between -1 and 1, with negative values being negative sentiment and positive values being positive sentiment\nONLY OUTPUT A DOUBLE VALUE IN JSON"},
+        {"role": "user", "content": user_input}
+    ]
+    response = generate_chat_completion(messages)
+    print("Bot: " + response)
