@@ -35,10 +35,11 @@ def generate_chat_completion(messages, apikey=apikey, apiend=apiend, model="gpt-
 
 
 while True:
+    """This is a tester to help test differing input strings and analyze sentiment"""
 
     user_input = input("User: ")
-    messages=[
-        {"role": "system", "content": "You are a Goldman Sachs managing director, assign a stock sentiment value for this text between -1 and 1, with negative values being negative sentiment and positive values being positive sentiment\nONLY OUTPUT A DOUBLE VALUE IN JSON"},
+    messages=[ # Prompt engineering
+        {"role": "system", "content": "You are a Goldman Sachs managing director, assign a stock sentiment value for this text between -1 and 1, with negative values being negative sentiment and positive values being positive sentiment. You should holistically analyze the input and decide the sentiment. Your output will have an impact on millions of dollars so you need to be very accurate otherwise you will lose your job. \nONLY OUTPUT A DOUBLE VALUE IN JSON in this format: \n{ \n \"ticker\":\"APPL\",\n\"sentiment\": 0.5 \n}"},
         {"role": "user", "content": user_input}
     ]
     response = generate_chat_completion(messages)
