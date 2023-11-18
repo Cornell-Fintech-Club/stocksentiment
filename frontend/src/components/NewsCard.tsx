@@ -8,20 +8,25 @@ function NewsCard(props: any) {
         .split(' ')
         .map((s: string) => s.charAt(0).toUpperCase() + s.substring(1))
         .join(' ');
+    var headline = props.headline.substring(0, 2) == ": " ? props.headline.substring(2, 55) + '...' : props.headline.substring(0, 55) + '...'
+    const summaryStartIndex = props.summary.indexOf("--");
+    const summaryToShow = summaryStartIndex !== -1 ? props.summary.substring(summaryStartIndex + 2) : props.summary;
 
     return (
-        <div className="card card-compact card-bordered w-96 bg-base-100">
-            <a href={props.url}>
-                <figure><img className="w-full h-[200px]" src={props.image} alt="LOL" /></figure>
-                <div className="card-body">
-                    <p className="card-title">{props.headline}</p>
-                    <p>{props.summary}</p>
-                    <div className="card-actions justify-end bottom-4 right-4 absolute">
-                        <div className="badge badge-outline">{category}</div>
-                        <div className="badge badge-outline">{`${day}`}</div>
-                    </div>
+        <div className="flex bg-base-400 rounded-box my-2">
+            <div className="w-1/4 flex items-center justify-center">
+                <figure>
+                    <img className="object-contain h-full w-full ml-3" src={props.image} />
+                </figure>
+            </div>
+            <div className="w-3/4 flex flex-col">
+                <p className="font-bold text-left text-base ml-6">{headline}</p>
+                <p className="text-left text-xs ml-6">{summaryToShow}</p>
+                <div className="flex flex-row-reverse bottom-0 mt-6 mr-2">
+                    <div className="badge badge-outline">{`${day}`}</div>
+                    <div className="badge badge-outline mr-1">{category}</div>
                 </div>
-            </a>
+            </div>
         </div>
     )
 }
