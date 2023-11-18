@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import NewsCard from './NewsCard';
+import TopGainers from './TopGainers';
 
 const StockNews = () => {
     const [data, setData] = useState([]);
@@ -40,24 +41,29 @@ const StockNews = () => {
         const interval = setInterval(fetchData, 60000); // Call the API every 60 seconds
 
         return () => clearInterval(interval);
+
     }, []);
     return (
-        <div className="mx-2 flex">
-            <div className="container mx-4 w-3/12 flex-initial">
-                <ul className="menu bg-white bordered w-full rounded-box align-middle">
-                </ul>
-            </div>
-            <div className="container mx-4 w-6/12 flex-initial">
-                <ul className="menu bg-white bordered w-full rounded-box align-middle">
-                    <h1 className="normal-case text-3xl font-bold text-[#02234D] text-left ml-2 my-4">Relevant News</h1>
-                    {createNewsCards(data)}
-                </ul>
-            </div>
-            <div className="container mx-4 w-3/12 flex-initial">
-                <ul className="menu bg-white bordered w-full rounded-box align-middle">
-                </ul>
+        <div>
+            <TopGainers />
+            <div className="mx-2 flex">
+                <div className="container mx-4 w-3/12 flex-initial">
+                    <ul className="menu bg-white bordered w-full rounded-box align-middle">
+                    </ul>
+                </div>
+                <div className="container mx-4 w-6/12 flex-initial">
+                    <ul className="menu bg-white bordered w-full rounded-box align-middle">
+                        <h1 className="normal-case text-3xl font-bold text-[#02234D] text-left ml-2 my-4">Relevant News</h1>
+                        {createNewsCards(data)}
+                    </ul>
+                </div>
+                <div className="container mx-4 w-3/12 flex-initial">
+                    <ul className="menu bg-white bordered w-full rounded-box align-middle">
+                    </ul>
+                </div>
             </div>
         </div>
+
     )
 }
 

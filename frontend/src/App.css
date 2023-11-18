@@ -41,3 +41,25 @@
     transform: rotate(360deg);
   }
 }
+
+@keyframes marquee {
+  0% {
+    transform: translate(0%, 0);
+  }
+
+  100% {
+    transform: translate(-100%, 0);
+  }
+}
+
+.marquee {
+  animation: marquee infinite 20s linear;
+}
+
+.card {
+  text-align: left;
+}
+
+.align-r {
+  text-align: right;
+}
