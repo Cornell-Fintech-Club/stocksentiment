@@ -5,44 +5,33 @@ import TopGainers from './TopGainers';
 
 const StockNews = () => {
     const [data, setData] = useState([]);
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const apiKey = 'AD2M1ASICW8IQ5IL';
-    //             const res = await axios({
-    //                 method: 'get',
-    //                 url: ('https://www.alphavantage.co/query?function=NEWS_SENTIMENT&apikey=${apiKey}' + apiKey),
-    //             });
-    //             setData(res.data.feed || [])
-    //         } catch (error) {
-    //             console.error('Error fetching stock data:', error);
-    //             alert('There was an error fetching the stock data.');
-    //         }
-    //     };
-
-    //     fetchData();
-
-    //     const interval = setInterval(fetchData, 60000000); // Call the API every 60 seconds
-
-    //     return () => clearInterval(interval);
-    // }, []);
     useEffect(() => {
         const fetchData = async () => {
-            const token = 'cl3v7d1r01qj63a9lv80cl3v7d1r01qj63a9lv8g'
-            const res = await axios({
-                method: 'get',
-                url: ('https://finnhub.io/api/v1/news?category=general' + '&token=' + token),
-            });
-            setData(res.data)
+            try {
+                const apiKey = 'VRF428VYVZ9DUYOW';
+                const res = await axios({
+                    method: 'get',
+                    url: ('https://www.alphavantage.co/query?function=NEWS_SENTIMENT&apikey=' + apiKey),
+                });
+                if (Array.isArray(res.data.feed)) {
+                    setData(res.data.feed);
+                } else {
+                    console.error('Data format issue: Feed is not an array');
+                }
+            } catch (error) {
+                console.error('Error fetching stock data:', error);
+                alert('There was an error fetching the stock data.');
+            }
         };
 
         fetchData();
 
-        const interval = setInterval(fetchData, 60000); // Call the API every 60 seconds
+        const interval = setInterval(fetchData, 60000000); // Call the API every 60 seconds
 
         return () => clearInterval(interval);
 
     }, []);
+
     return (
         <div>
             <TopGainers />
@@ -67,16 +56,32 @@ const StockNews = () => {
     )
 }
 
-function createNewsCards(data: string | any[]) {
-    const res_news_cards = []
-    for (var i = 0; i < data.length; i++) {
-        var news_article = data[i];
-        res_news_cards.push(<a href={news_article.url} className="hover:bg-base-100 h-1/5"><NewsCard category={news_article.category}
-            date={news_article.datetime} image={news_article.image} summary={news_article.summary} headline={news_article.headline}
-            source={news_article.source} url={news_article.url}
-        /> </a>);
+function createNewsCards(data: any) {
+    if (!Array.isArray(data)) {
+        return null;
+    }
+
+    const res_news_cards = [];
+    for (let i = 0; i < data.length; i++) {
+        const news_article = data[i];
+        const category = news_article.topics.length > 0 ? news_article.topics[0].topic : '';
+
+        res_news_cards.push(
+            <a href={news_article.url} className="hover:bg-base-100 h-1/5" key={i}>
+                <NewsCard
+                    category={category}
+                    date={news_article.time_published}
+                    image={news_article.banner_image}
+                    summary={news_article.summary}
+                    headline={news_article.title}
+                    source={news_article.source}
+                    url={news_article.url}
+                />
+            </a>
+        );
     }
     return res_news_cards;
 }
+
 
 export default StockNews
