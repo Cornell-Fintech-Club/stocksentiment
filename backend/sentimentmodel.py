@@ -13,7 +13,7 @@ news_api = '9F4BYKOVZQ1BL8SJ'
 
 
 def fetch_news(symbol):
-    news_api_url = f"https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers={symbol}&apikey={apikey}"
+    news_api_url = f"https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers={symbol}&apikey={news_api}"
     response = requests.get(news_api_url)
     if response.status_code == 200:
         return response.json()
@@ -43,7 +43,7 @@ def generate_chat_completion(messages, apikey=apikey, apiend=apiend, model="gpt-
     else:
         raise Exception(f"Error {response.status_code}: {response.text}")
         
-def NewstoSentiment():
+def NewstoSentiment(ticker):
     ticker = input("Enter stock symbol for news (e.g., AAPL): ")
     try:
         news_data = fetch_news(ticker)

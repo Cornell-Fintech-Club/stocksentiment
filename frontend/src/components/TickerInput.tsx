@@ -1,16 +1,21 @@
-import { useState, ChangeEvent, KeyboardEvent } from "react";
+import React, { useState } from 'react';
+import NewstoSentiment from './js-sentiment-model.js';
 
-export default function TickerInput() {
+function TickerInput() {
     const [inputValue, setInputValue] = useState('');
     const [displayValue, setDisplayValue] = useState('');
 
-    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(event.target.value);
     }
-
-    const handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
+    
+    const handleKeyPress = async (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
-            setDisplayValue(inputValue);
+            const sentiment = await NewstoSentiment(inputValue);
+            console.log("userside")
+            console.log("SENT" + sentiment)
+            const sentimentObj = JSON.parse(sentiment);
+            setDisplayValue(`Company: ${sentimentObj.ticker} | Sentiment: ${sentimentObj.sentiment}`);
         }
     }
 
@@ -30,3 +35,5 @@ export default function TickerInput() {
         </div>
     )
 }
+
+export default TickerInput;
