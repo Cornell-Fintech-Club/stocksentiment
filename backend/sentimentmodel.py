@@ -43,14 +43,18 @@ def generate_chat_completion(messages, apikey=apikey, apiend=apiend, model="gpt-
     else:
         raise Exception(f"Error {response.status_code}: {response.text}")
         
-while True:
-    """This is a tester to help test differing input strings and analyze sentiment"""
-
+def NewstoSentiment():
     ticker = input("Enter stock symbol for news (e.g., AAPL): ")
-    news_data = fetch_news(ticker)
-    messages=[ # Prompt engineering
-        {"role": "system", "content": "You are a Goldman Sachs managing director, assign a stock sentiment value for this text between -1 and 1, with negative values being negative sentiment and positive values being positive sentiment. You should holistically analyze the input and decide the sentiment. Your output will have an impact on millions of dollars so you need to be very accurate otherwise you will lose your job. \nONLY OUTPUT A DOUBLE VALUE IN JSON in this format: \n{ \n \"ticker\":\"APPL\",\n\"sentiment\": 0.5 \n}"},
-        {"role": "user", "content": json.dump(news_data)}
-    ]
-    response = generate_chat_completion(messages)
-    print("Bot: " + response)
+    try:
+        news_data = fetch_news(ticker)
+        news_data = str(news_data)
+        
+        messages=[ # Prompt engineering
+            {"role": "system", "content": "You are a Goldman Sachs managing director, assign a stock sentiment value for this text between -1 and 1, with negative values being negative sentiment and positive values being positive sentiment. You should holistically analyze the input and decide the sentiment. Your output will have an impact on millions of dollars so you need to be very accurate otherwise you will lose your job. \nONLY OUTPUT A DOUBLE VALUE IN JSON in this format: \n{ \n \"ticker\":\"APPL\",\n\"sentiment\": 0.5 \n}"},
+            {"role": "user", "content": json.dumps(news_data[:2000])}
+        ]
+        response = generate_chat_completion(messages)
+        print("Bot: " + response)
+        return response
+    except Exception as e:
+        return e
