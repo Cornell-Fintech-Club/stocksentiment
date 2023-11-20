@@ -8,12 +8,15 @@ const TopGainers = () => {
   const [data, setData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-      // const key = 'TQ1EZ45XW03X7WZL'
-      const response = await axios.get(`https://financialmodelingprep.com/api/v3/stock_market/gainers?apikey=emRPMNIDu6T9CnfhgVloBcnVBagawWcw`);
-      setData(response.data)
+      const key = 'VRF428VYVZ9DUYOW'
+      const response = await axios.get(`https://www.alphavantage.co/query?function=TOP_GAINERS_LOSERS&apikey=${key}`);
+      setData(response.data.top_gainers)
     };
-
     fetchData();
+
+
+
+    // OjJiZmUwZmNlYmM3ZjE4ODMxZWZlY2MyYzBmYjJhYWQ3
 
     // const interval = setInterval(fetchData, 60000); // Call the API every 60 seconds
 
@@ -31,9 +34,9 @@ function createTopGainers(data: string | any[]) {
 
   for (var i = 0; i < data.length; i++) {
     var gainer = data[i];
-    console.log(data)
+    // change_amount, change_percentage, volume, price, ticker
     gainers.push(<div className="carousel-item w-1/7 h-auto flex-1 mx-4">
-      <Gainer symbol={gainer.symbol} name={gainer.name} change={gainer.change} price={gainer.price} changesPercentage={gainer.changesPercentage}
+      <Gainer ticker={gainer.ticker} volume={gainer.volume} change_amount={gainer.change_amount} change_percentage={gainer.change_percentage}
       ></Gainer>
 
     </div>);
