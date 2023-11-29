@@ -6,8 +6,9 @@ export async function fetch_news(symbol: string): Promise<number> {
     const current_month = '12';
     const current_year = '2023';
     const time_from = current_year + current_month + '01T0130';
+    const key = '0' // REPLACE WITH KEY
 
-    const news_api_url = 'https://www.alphavantage.co/query?function=NEWS_SENTIMENT&apikey=VRF428VYVZ9DUYOW&tickers=' + symbol + '&time_from=' + time_from;
+    const news_api_url = 'https://www.alphavantage.co/query?function=NEWS_SENTIMENT&apikey=' + key + '&tickers=' + symbol + '&time_from=' + time_from;
 
     try {
         const response = await axios.get(news_api_url, { headers: { 'User-Agent': 'request' } });
