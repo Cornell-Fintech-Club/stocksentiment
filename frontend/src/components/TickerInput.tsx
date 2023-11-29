@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import NewstoSentiment from './js-sentiment-model.js';
+import { fetch_news } from './js-sentiment-model';
 
 function TickerInput() {
     const [inputValue, setInputValue] = useState('');
@@ -11,16 +11,30 @@ function TickerInput() {
     
     const handleKeyPress = async (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
-            const sentiment = await NewstoSentiment(inputValue);
-            console.log("userside")
-            console.log("SENT" + sentiment)
-            const sentimentObj = JSON.parse(sentiment);
-            setDisplayValue(`Company: ${sentimentObj.ticker} | Sentiment: ${sentimentObj.sentiment}`);
+            const sentiment = await fetch_news(inputValue);
+            const formattedSentiment = parseFloat(sentiment.toFixed(3));
+
+            console.log(formattedSentiment)
+            if (formattedSentiment == 10) { 
+                setDisplayValue(`Company ${inputValue} not found. Please retry.`);
+            } else if (formattedSentiment <= -0.35) {
+                setDisplayValue(`Company: ${inputValue} | Sentiment: ${formattedSentiment} | Bearish`);
+            } else if (formattedSentiment > -0.35 && formattedSentiment <= -0.15) {
+                setDisplayValue(`Company: ${inputValue} | Sentiment: ${formattedSentiment} | Somewhat Bearish`);
+            } else if (formattedSentiment > -0.15 && formattedSentiment < 0.15) {
+                setDisplayValue(`Company: ${inputValue} | Sentiment: ${formattedSentiment} | Neutral`);
+            } else if (formattedSentiment >= 0.15 && formattedSentiment < 0.35) {
+                setDisplayValue(`Company: ${inputValue} | Sentiment: ${formattedSentiment} | Somewhat Bullish`);
+            } else {
+                setDisplayValue(`Company: ${inputValue} | Sentiment: ${formattedSentiment} | Bullish`);
+            }
+    
         }
     }
-
+    
     return (
-        <div className="flex justify-center items-start h-screen pt-20">
+        <div>
+            <div className="flex justify-center items-start h-screen pt-20">
             <div className="form-control w-full max-w-xs">
                 <label className="label">
                     <span className="label-text">Sentiment Analyzer</span>
@@ -32,6 +46,8 @@ function TickerInput() {
                 </label>
                 <p className="mt-4">{displayValue}</p>
             </div>
+        </div>
+
         </div>
     )
 }

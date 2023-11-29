@@ -10,6 +10,7 @@ export default function HomePage() {
       <SearchBar />
       <Table />
       <TickerInput />
+    
     </div >
   );
 }
