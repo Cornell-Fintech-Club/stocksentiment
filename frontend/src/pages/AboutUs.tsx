@@ -6,7 +6,7 @@ export default function AboutUs() {
         <div className="h-full">
             <div className="hero min-h-screen">
                 <div
-                    className="relative inset-x-0 -top-20 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+                    className="relative inset-x-0 -top-20 -z-10 overflow-hidden blur-3xl sm:-top-80"
                     aria-hidden="true"
                 >
                     <div
@@ -41,7 +41,7 @@ export default function AboutUs() {
                     </div>
                 </div>
                 <div
-                    className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
+                    className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
                     aria-hidden="true"
                 >
                     <div

@@ -34,7 +34,7 @@ const StockHistoryGraph: React.FC<IStockDetailGraphProps> = ({ ticker }) => {
     useEffect(() => {
         const fetchHistoricalData = async () => {
             try {
-                const apiKey = '7GQ7D1K0K5YUM58O'; // API KEY
+                const apiKey = 'VRF428VYVZ9DUYOW'; // API KEY
                 const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker}&outputsize=compact&apikey=${apiKey}`;
                 const response = await axios.get(url);
                 const timeSeries: TimeSeriesData = response.data['Time Series (Daily)'] as TimeSeriesData;

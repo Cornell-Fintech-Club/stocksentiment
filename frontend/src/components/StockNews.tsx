@@ -3,85 +3,135 @@ import React, { useEffect, useState } from 'react';
 import NewsCard from './NewsCard';
 import TopGainers from './TopGainers';
 
-const StockNews = () => {
-    const [data, setData] = useState([]);
+interface NewsArticle {
+    url: string;
+    topics: { topic: string }[];
+    time_published: string;
+    banner_image: string;
+    summary: string;
+    title: string;
+    source: string;
+}
+
+const StockNews: React.FC = () => {
+    const [data, setData] = useState<NewsArticle[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string>('');
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const apiKey = 'VRF428VYVZ9DUYOW';
-                const res = await axios({
-                    method: 'get',
-                    url: ('https://www.alphavantage.co/query?function=NEWS_SENTIMENT&apikey=' + apiKey),
-                });
-                if (Array.isArray(res.data.feed)) {
-                    setData(res.data.feed);
-                } else {
-                    console.error('Data format issue: Feed is not an array');
-                }
-            } catch (error) {
-                console.error('Error fetching stock data:', error);
-                alert('There was an error fetching the stock data.');
-            }
-        };
-
         fetchData();
-
-        const interval = setInterval(fetchData, 60000000); // Call the API every 60 seconds
-
+        const interval = setInterval(fetchData, 60000); // Call the API every 60 seconds
         return () => clearInterval(interval);
-
     }, []);
 
+    const fetchData = async () => {
+        setIsLoading(true);
+        try {
+            const apiKey = "VRF428VYVZ9DUYOW"; // Use environment variable for API key
+            const res = await axios.get(`https://www.alphavantage.co/query?function=NEWS_SENTIMENT&apikey=${apiKey}`);
+            if (Array.isArray(res.data.feed)) {
+                setData(res.data.feed);
+            } else {
+                setError('Data format issue: Feed is not an array');
+                console.error('Data format issue: Feed is not an array');
+            }
+        } catch (error) {
+            setError('Error fetching stock data');
+            console.error('Error fetching stock data:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
-        <div>
+        <div className="flex flex-col items-center p-5">
             <TopGainers />
-            <div className="mx-2 flex">
-                <div className="container mx-4 w-3/12 flex-initial">
-                    <ul className="menu bg-white bordered w-full rounded-box align-middle">
-                    </ul>
-                </div>
-                <div className="container mx-4 w-6/12 flex-initial">
-                    <ul className="menu bg-white bordered w-full rounded-box align-middle">
-                        <h1 className="normal-case text-3xl font-bold text-[#02234D] text-left ml-2 my-4">Relevant News</h1>
+            <div className="w-full max-w-4xl mt-5">
+                <h1 className="text-3xl font-bold text-red-800 mb-4">Relevant News</h1>
+                {isLoading ? (
+                    <p className="text-center">Loading news...</p>
+                ) : error ? (
+                    <p className="text-red-500">Error: {error}</p>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {createNewsCards(data)}
-                    </ul>
-                </div>
-                <div className="container mx-4 w-3/12 flex-initial">
-                    <ul className="menu bg-white bordered w-full rounded-box align-middle">
-                    </ul>
-                </div>
+                    </div>
+                )}
             </div>
         </div>
+    );
+};
 
-    )
-}
+const createNewsCards = (data: NewsArticle[]) => {
+    if (!Array.isArray(data)) return null;
+    return data.map((news_article, i) => (
+        <a href={news_article.url} className="block hover:bg-gray-100 p-3 rounded-lg shadow" key={i}>
+            <div className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-full">
+                {news_article.banner_image && (
+                    <img src={news_article.banner_image} alt="News banner" className="w-full h-48 object-cover" />
+                )}
+                <div className="p-4 flex flex-col flex-grow">
+                    <div>
+                        <h3 className="text-lg font-bold mb-2">{news_article.title}</h3>
+                        <p className="text-gray-700 text-sm flex-grow">{news_article.summary}</p>
+                    </div>
+                    <div className="mt-2">
+                        <div className="text-center">
+                            <div className="bg-red-100 text-red-800 rounded-full px-3 py-1 text-sm font-semibold whitespace-nowrap mb-1">
+                                {news_article.topics.length > 0 ? news_article.topics[0].topic : ''}
+                            </div>
+                        </div>
+                        <div className="text-center">
+                            <div className="bg-gray-100 text-gray-800 rounded-full px-3 py-1 text-sm font-semibold whitespace-nowrap">
+                                {formatDate(news_article.time_published)}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    ));
+};
 
-function createNewsCards(data: any) {
-    if (!Array.isArray(data)) {
-        return null;
-    }
+const formatDate = (dateString: string) => {
+    const year = dateString.slice(0, 4);
+    const month = dateString.slice(4, 6);
+    const day = dateString.slice(6, 8);
+    const hours = dateString.slice(9, 11);
+    const minutes = dateString.slice(11, 13);
 
-    const res_news_cards = [];
-    for (let i = 0; i < data.length; i++) {
-        const news_article = data[i];
-        const category = news_article.topics.length > 0 ? news_article.topics[0].topic : '';
+    // Convert month number to the full month name
+    const months = [
+        'January', 'February', 'March', 'April', 'May', 'June', 'July',
+        'August', 'September', 'October', 'November', 'December'
+    ];
+    const monthName = months[parseInt(month) - 1];
 
-        res_news_cards.push(
-            <a href={news_article.url} className="hover:bg-base-100 h-1/5" key={i}>
-                <NewsCard
-                    category={category}
-                    date={news_article.time_published}
-                    image={news_article.banner_image}
-                    summary={news_article.summary}
-                    headline={news_article.title}
-                    source={news_article.source}
-                    url={news_article.url}
-                />
-            </a>
-        );
-    }
-    return res_news_cards;
-}
+    // Determine AM/PM based on hours
+    const amPm = parseInt(hours) >= 12 ? 'pm' : 'am';
+
+    // Convert hours to 12-hour format
+    const formattedHours = (parseInt(hours) % 12) || 12;
+
+    const formattedDate = `${monthName} ${day}, ${year} ${formattedHours}:${minutes}${amPm}`;
+    return formattedDate;
+};
 
 
-export default StockNews
+
+const getMonthName = (month: number) => {
+    const monthNames = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    return monthNames[month];
+};
+
+
+// const formatDate = (dateString: string) => {
+//     const options = { year: 'numeric', month: 'short', day: 'numeric' };
+//     const formattedDate = new Date(dateString).toLocaleDateString(undefined, options);
+//     return formattedDate;
+// };
+
+export default StockNews;

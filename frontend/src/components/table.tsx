@@ -68,7 +68,7 @@ export default function Table() {
   // Function to update current prices
   const updatePrices = async () => {
     return
-    // // If there are no stocks, do not attempt to update prices
+    // If there are no stocks, do not attempt to update prices
     // if (stocks.length === 0) {
     //   return;
     // }
@@ -109,8 +109,12 @@ export default function Table() {
       // Construct the API endpoint with the API key and ticker symbol
       const query = newStockInput.ticker;
       const volume = newStockInput.volume;
-      const apiKey = '7GQ7D1K0K5YUM58O';
+      const apiKey = 'VRF428VYVZ9DUYOW';
       const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${query}&apikey=${apiKey}`;
+
+      const companyUrl = `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${query}&apikey=${apiKey}`;
+      const companyResponse = await axios.get(companyUrl);
+      const companyName = companyResponse.data.Name;
 
       // Fetch stock data from Alpha Vantage
       const response = await axios.get(url);
@@ -122,7 +126,7 @@ export default function Table() {
         const newStock: IStock = {
           id: stocks.length + 1,
           ticker: quote['01. symbol'],
-          company: newStockInput.company, // Alpha Vantage does not provide the company name in GLOBAL_QUOTE
+          company: companyName, // Alpha Vantage does not provide the company name in GLOBAL_QUOTE
           boughtInPrice: price, // use the input price as the boughtInPrice
           currentPrice: parseFloat(quote['05. price']), // fetched current price
           change: parseFloat(quote['09. change']),
@@ -256,8 +260,11 @@ export default function Table() {
                       <td>{stock.volume}</td>
 
                       <td>
-                        <button onClick={() => handleDeleteStock(stock.ticker)} className="btn btn-error">
-                          Delete
+                        <button onClick={() => handleTickerClick(stock.ticker)} className="btn btn-sm btn-ghost mr-2">
+                          <i className="fas fa-chart-line"></i>
+                        </button>
+                        <button onClick={() => handleDeleteStock(stock.ticker)} className="btn btn-error btn-xs text-custom-red">
+                          <i className="fas fa-times"></i>
                         </button>
                       </td>
                     </tr>
@@ -283,7 +290,3 @@ export default function Table() {
       </div>
   );
 }
-
-
-
-

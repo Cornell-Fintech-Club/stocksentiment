@@ -1,13 +1,20 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
+// Import your logo image
+import logo from '../CFT_logo_cropped-r.png'; // Replace with the actual path to your logo image
+
 const NavBar = () => {
     const location = useLocation();
 
     return (
         <div className="navbar bg-base-100 border">
             <div className="navbar-start">
-                <a className="btn btn-ghost normal-case text-xl"><span className="text-primary">CFT</span>Stock Sentiment</a>
+                {/* Replace the text with your logo */}
+                <Link to="/" className="btn btn-ghost normal-case text-xl">
+                    <img src={logo} alt="CFT Stock Sentiment Logo" className="h-8 w-auto" />
+                </Link>
+                <a className="btn btn-ghost normal-case text-xl">Stock Sentiment</a>
             </div>
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1">
@@ -40,4 +47,4 @@ const NavBar = () => {
     )
 }
 
-export default NavBar
+export default NavBar;
