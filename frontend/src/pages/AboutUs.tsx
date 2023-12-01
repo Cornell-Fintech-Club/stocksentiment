@@ -34,9 +34,9 @@ export default function AboutUs() {
                             >
                                 Get started
                             </Link>
-                            <Link to="#" className="text-sm font-semibold leading-6 text-primary">
+                            <a href="#learnmore" className="text-sm font-semibold leading-6 text-primary">
                                 Learn more <span aria-hidden="true">→</span>
-                            </Link>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -53,7 +53,27 @@ export default function AboutUs() {
                     />
                 </div>
             </div>
-            <div>ajfdksaljf;kldsa</div>
+            <div id="learnmore" className="mt-5 flex gap-x-2" >
+                <div className="text-center mx-auto max-w-2xl lg:py-20">
+                    <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-6xl ">
+                        Who are we?
+                    </h1>
+                    <p className="mt-6 text-lg leading-8 text-gray-600">
+                        Cornell FinTech Club (CFT) is the first all-encompassing, undergraduate-led club that aims to create spaces and opportunities for students in fintech through projects in the investment and engineering teams, weekly discussions, new member education, and corporate events. We open select events to both undergraduate and graduate students to help foster a community for fintech at Cornell University. CFT is supported by Fintech at Cornell, an Initiative of the SC Johnson College of Business.<span> </span><Link to="https://www.cornellfintechclub.com/" className="semibold underline mt-6 text-lg leading-8 text-primary">
+                            See more
+                        </Link></p>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <h1 className="font-bold tracking-tight text-primary sm:text-4xl ">
+                        Members
+                    </h1>
+                    <p className="mt-6 text-lg leading-8 text-gray-600">PM: <a className="underline" href="https://www.linkedin.com/in/emna-sadkaoui-336450224/">Emna</a></p>
+                    <p className="mt-6 text-lg leading-8 text-gray-600">TPMs: Diego and <a className="underline" href="https://www.linkedin.com/in/neil-gidwani/">Neil</a></p>
+                    <p className="mt-6 text-lg leading-8 text-gray-600">Business: Farhan, Goretti, and <a className="underline" href="https://www.linkedin.com/in/khu22/">Kevin</a></p>
+                    <p className="mt-6 text-lg leading-8 text-gray-600">Devs: Kevin, Chloe, Rishi, and Zachary</p>
+                </div>
+            </div>
         </div >
     );
 }
