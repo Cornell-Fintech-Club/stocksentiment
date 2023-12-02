@@ -13,6 +13,8 @@ export async function fetch_news(symbol: string): Promise<number> {
         const response = await axios.get(news_api_url, { headers: { 'User-Agent': 'request' } });
         const data = response.data;
         const scores = extract_ticker_sentiment_scores(data['feed']);
+        const alphaScore = data['overall_sentiment_score']
+        console.log(alphaScore)
         const scores_list: number[] = [];
         for (let score of scores) {
             if (score['ticker'] === symbol) {
