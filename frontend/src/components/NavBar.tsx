@@ -19,7 +19,7 @@ const NavBar = () => {
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1">
                     <li><Link to="/" className={location.pathname === '/' ? 'active' : ''}>Home</Link></li>
-                    <li><a>Analysis</a></li>
+                    <li><Link to="/analysis" className={location.pathname === '/analysis' ? 'active' : ''}>Analysis</Link></li>
                     <li><Link to="/news" className={location.pathname === '/news' ? 'active' : ''}>News</Link></li>
                     <li><Link to="/aboutus" className={location.pathname === '/aboutus' ? 'active' : ''}>About Us</Link></li>
                     <li><a>Contact</a></li>

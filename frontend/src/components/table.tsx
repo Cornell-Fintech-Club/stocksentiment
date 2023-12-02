@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import EquityPieChart from './EquityPieChart';
 import StockHistoryGraph from './StockHistoryGraph';
+import { fetch_news } from './js-sentiment-model';
 
 interface IStock {
   id: number;
@@ -10,6 +11,7 @@ interface IStock {
   boughtInPrice: number;
   currentPrice: number;
   change: number;
+  category: string;
   changePercent: number;
   sentiment: number;
   volume: number;
@@ -22,6 +24,7 @@ interface INewStockInput {
   company: string;
   price: string;
   change: string;
+    category: string;
   changePercent: string;
   sentiment: string;
   volume: string;
@@ -34,6 +37,7 @@ export default function Table() {
     company: '',
     price: '',
     change: '',
+    category: '',
     changePercent: '',
     sentiment: '',
     volume: '',
@@ -97,6 +101,24 @@ export default function Table() {
     return () => clearInterval(interval);
   }, [stocks]);
 
+  const getCategory = (formattedSentiment: number) => {
+    if (formattedSentiment === 10) {
+      return 'N/A';
+    } else if (formattedSentiment <= -0.35) {
+      return 'Bearish';
+    } else if (formattedSentiment > -0.35 && formattedSentiment <= -0.15) {
+      return 'Somewhat Bearish';
+    } else if (formattedSentiment > -0.15 && formattedSentiment < 0.15) {
+      return 'Neutral';
+    } else if (formattedSentiment >= 0.15 && formattedSentiment < 0.35) {
+      return 'Somewhat Bullish';
+    } else {
+      return 'Bullish';
+    }
+  };
+
+
+
   // Function to add new stock
   const handleAddStock = async () => {
     try {
@@ -119,9 +141,13 @@ export default function Table() {
       // Fetch stock data from Alpha Vantage
       const response = await axios.get(url);
 
+
       // Check if the API response is valid
       if (response.data['Global Quote']) {
+
         const quote = response.data['Global Quote'];
+        const sentiment = await fetch_news(quote['01. symbol']);
+        const formattedSentiment = parseFloat(sentiment.toFixed(3));
         const price = parseFloat(quote['05. price'])
         const newStock: IStock = {
           id: stocks.length + 1,
@@ -131,7 +157,8 @@ export default function Table() {
           currentPrice: parseFloat(quote['05. price']), // fetched current price
           change: parseFloat(quote['09. change']),
           changePercent: parseFloat(quote['10. change percent']),
-          sentiment: 0, //
+          category: getCategory(formattedSentiment),
+          sentiment: formattedSentiment, //
           volume: parseInt(newStockInput.volume, 10),
           totalValue: price * parseFloat(volume),
           link: '#' //
@@ -147,6 +174,7 @@ export default function Table() {
           price: '',
           change: '',
           changePercent: '',
+          category: '',
           sentiment: '',
           volume: '',
         });
@@ -165,7 +193,8 @@ export default function Table() {
             changePercent: parseFloat((Math.random() * 100).toFixed(2)),
             sentiment: parseFloat((Math.random() * 100).toFixed(2)),
             volume: Math.floor(Math.random() * 10000),
-            totalValue: parseFloat(randomPrice) * parseFloat(volume),
+            totalValue: parseFloat((parseFloat(randomPrice) * parseFloat(volume)).toFixed(2)),
+            category: "N/A",
             link: '#'
           };
         };
@@ -237,9 +266,9 @@ export default function Table() {
               <th>Bought-In Price</th>
               <th>Current Price</th>
               <th>Value</th>
-              <th>Change</th>
               <th>Change %</th>
               <th>Sentiment Score</th>
+              <th>Category</th>
               <th>Volume</th>
               <th>Actions</th>
             </tr>
@@ -254,9 +283,9 @@ export default function Table() {
                       <td>${stock.boughtInPrice.toFixed(2)}</td>
                       <td>${stock.currentPrice.toFixed(2)}</td>
                       <td>${stock.totalValue}</td>
-                      <td>{stock.change}</td>
                       <td>{stock.changePercent}%</td>
                       <td>{stock.sentiment}</td>
+                      <td>{stock.category}</td>
                       <td>{stock.volume}</td>
 
                       <td>
