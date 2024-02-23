@@ -34,6 +34,20 @@ The project is structured as follows:
 - `yarn.lock`: A lock file that specifies exact versions of dependencies.
 
 ## Features
--TBD
+
+### 1. Real-time Sentiment Analysis
+- Analyze sentiment from various sources in real-time to provide up-to-date insights.
+
+### 2. Customizable Dashboard
+- Customize the dashboard to display sentiment trends, sentiment distribution, and relevant news articles.
+
+### 3. Historical Analysis
+- View historical sentiment data to identify trends and patterns over time.
+
+## Contributors
+- TPM/PMs: Emna, Diego, Kevin
+- BAs: Goretti, Farhan, Nikhil
+- SWEs: Kevin, Eddie, Aneesh, Bhuwan
+
 
 Thank you for using the Cornell Fintech Club Stock Sentiment Analysis Tool!
