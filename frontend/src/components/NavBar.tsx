@@ -18,10 +18,10 @@ const NavBar = () => {
             </div>
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1">
-                    <li><Link to="/" className={location.pathname === '/' ? 'active: bg-primary text-white' : ''}>Home</Link></li>
+                    <li><Link to="/" className={location.pathname === '/' ? 'bg-primary text-white' : ''}>Home</Link></li>
                     <li><a>Analysis</a></li>
-                    <li><Link to="/news" className={location.pathname === '/news' ? 'active: bg-primary text-white' : ''}>News</Link></li>
-                    <li><Link to="/aboutus" className={location.pathname === '/aboutus' ? 'active bg-primary text-white' : ''}>About Us</Link></li>
+                    <li><Link to="/news" className={location.pathname === '/news' ? 'bg-primary text-white' : ''}>News</Link></li>
+                    <li><Link to="/aboutus" className={location.pathname === '/aboutus' ? 'bg-primary text-white' : ''}>About Us</Link></li>
                     <li><a>Contact</a></li>
                 </ul>
             </div>
