@@ -11,17 +11,17 @@ const NavBar = () => {
         <div className="navbar bg-base-100 border">
             <div className="navbar-start">
                 {/* Replace the text with your logo */}
-                <Link to="/" className="btn btn-ghost normal-case text-xl">
+                <Link to="https://www.cornellfintechclub.com/" className="btn btn-ghost normal-case text-xl">
                     <img src={logo} alt="CFT Stock Sentiment Logo" className="h-8 w-auto" />
                 </Link>
                 <a className="btn btn-ghost normal-case text-xl">Stock Sentiment</a>
             </div>
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1">
-                    <li><Link to="/" className={location.pathname === '/' ? 'active' : ''}>Home</Link></li>
+                    <li><Link to="/" className={location.pathname === '/' ? 'active: bg-primary text-white' : ''}>Home</Link></li>
                     <li><a>Analysis</a></li>
-                    <li><Link to="/news" className={location.pathname === '/news' ? 'active' : ''}>News</Link></li>
-                    <li><Link to="/aboutus" className={location.pathname === '/aboutus' ? 'active' : ''}>About Us</Link></li>
+                    <li><Link to="/news" className={location.pathname === '/news' ? 'active: bg-primary text-white' : ''}>News</Link></li>
+                    <li><Link to="/aboutus" className={location.pathname === '/aboutus' ? 'active bg-primary text-white' : ''}>About Us</Link></li>
                     <li><a>Contact</a></li>
                 </ul>
             </div>
