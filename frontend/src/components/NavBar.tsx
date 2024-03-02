@@ -17,13 +17,11 @@ const NavBar = () => {
                 <a className="btn btn-ghost normal-case text-xl">Stock Sentiment</a>
             </div>
             <div className="navbar-center hidden lg:flex">
-                <ul className="menu menu-horizontal px-1">
-                    <li><Link to="/" className={location.pathname === '/' ? 'bg-primary text-white' : ''}>Home</Link></li>
-                    <li><a>Analysis</a></li>
-                    <li><Link to="/news" className={location.pathname === '/news' ? 'bg-primary text-white' : ''}>News</Link></li>
-                    <li><Link to="/aboutus" className={location.pathname === '/aboutus' ? 'bg-primary text-white' : ''}>About Us</Link></li>
-                    <li><a>Contact</a></li>
-                </ul>
+                <Link to="/"><button className={location.pathname === '/' ? 'btn btn-primary' : 'btn btn-ghost'}>Home</button></Link>
+                <Link to="/analysis"><button className={location.pathname === '/analysis' ? 'btn btn-primary' : 'btn btn-ghost'}>Analysis</button></Link>
+                <Link to="/news"><button className={location.pathname === '/news' ? 'btn btn-primary' : 'btn btn-ghost'}>News</button></Link>
+                <Link to="/aboutus"><button className={location.pathname === '/aboutus' ? 'btn btn-primary' : 'btn btn-ghost'}>About Us</button></Link>
+                <Link to="/contact"><button className={location.pathname === '/contact' ? 'btn btn-primary' : 'btn btn-ghost'}>Contact</button></Link>
             </div>
             <div className="navbar-end">
                 <div className="dropdown dropdown-end">
