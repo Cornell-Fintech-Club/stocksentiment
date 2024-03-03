@@ -47,7 +47,7 @@ const StockNews: React.FC = () => {
         <div className="flex flex-col items-center p-5">
             <TopGainers />
             <div className="w-full max-w-4xl mt-5">
-                <h1 className="text-3xl font-bold text-red-800 mb-4">Relevant News</h1>
+                <h1 className="text-3xl font-bold text-red-800 mb-4">News</h1>
                 {isLoading ? (
                     <p className="text-center">Loading news...</p>
                 ) : error ? (
