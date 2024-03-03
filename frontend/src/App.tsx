@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage';
 import StockNews from './components/StockNews';
 import NavBar from './components/NavBar';
 import AboutUs from './pages/AboutUs';
+import AnalysisPage from "./pages/AnalysisPage";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route index element={<HomePage />} />
           <Route path="/news" element={<StockNews />} />
+            <Route path="/analysis" element={<AnalysisPage />} />
           <Route path="/aboutus" element={<AboutUs />} />
         </Routes>
       </BrowserRouter>
