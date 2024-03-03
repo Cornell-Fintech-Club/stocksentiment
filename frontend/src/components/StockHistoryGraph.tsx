@@ -46,7 +46,7 @@ const StockHistoryGraph: React.FC<IStockDetailGraphProps> = ({ ticker }) => {
                             // Assert the correct type within the map function
                             data: Object.values(timeSeries).map((dailyData: DailyTimeSeries) => parseFloat(dailyData['4. close'])),
                             fill: false,
-                            borderColor: 'rgb(75, 192, 192)',
+                            borderColor: 'rgb(172, 25, 25)',
                             tension: 0.1
                         }
                     ]

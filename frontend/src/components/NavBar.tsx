@@ -11,19 +11,17 @@ const NavBar = () => {
         <div className="navbar bg-base-100 border">
             <div className="navbar-start">
                 {/* Replace the text with your logo */}
-                <Link to="/" className="btn btn-ghost normal-case text-xl">
+                <Link to="https://www.cornellfintechclub.com/" className="btn btn-ghost normal-case text-xl">
                     <img src={logo} alt="CFT Stock Sentiment Logo" className="h-8 w-auto" />
                 </Link>
                 <a className="btn btn-ghost normal-case text-xl">Stock Sentiment</a>
             </div>
             <div className="navbar-center hidden lg:flex">
-                <ul className="menu menu-horizontal px-1">
-                    <li><Link to="/" className={location.pathname === '/' ? 'active' : ''}>Home</Link></li>
-                    <li><Link to="/analysis" className={location.pathname === '/analysis' ? 'active' : ''}>Analysis</Link></li>
-                    <li><Link to="/news" className={location.pathname === '/news' ? 'active' : ''}>News</Link></li>
-                    <li><Link to="/aboutus" className={location.pathname === '/aboutus' ? 'active' : ''}>About Us</Link></li>
-                    <li><a>Contact</a></li>
-                </ul>
+                <Link to="/"><button className={location.pathname === '/' ? 'btn btn-primary' : 'btn btn-ghost'}>Home</button></Link>
+                <Link to="/analysis"><button className={location.pathname === '/analysis' ? 'btn btn-primary' : 'btn btn-ghost'}>Analysis</button></Link>
+                <Link to="/news"><button className={location.pathname === '/news' ? 'btn btn-primary' : 'btn btn-ghost'}>News</button></Link>
+                <Link to="/aboutus"><button className={location.pathname === '/aboutus' ? 'btn btn-primary' : 'btn btn-ghost'}>About Us</button></Link>
+                <Link to="/contact"><button className={location.pathname === '/contact' ? 'btn btn-primary' : 'btn btn-ghost'}>Contact</button></Link>
             </div>
             <div className="navbar-end">
                 <div className="dropdown dropdown-end">
