@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
 import HomePage from './pages/HomePage';
 import StockNews from './components/StockNews';
 import NavBar from './components/NavBar';
