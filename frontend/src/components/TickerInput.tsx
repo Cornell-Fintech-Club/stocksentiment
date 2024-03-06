@@ -65,7 +65,7 @@ function TickerInput() {
                     valueTextFontSize="0px" // Hide value text
                     width={300} // Adjust width as needed
                     height={200} // Adjust height as needed
-                    // ... other customization props as needed
+                // ... other customization props as needed
                 />
             </div>
 
