@@ -45,10 +45,6 @@ export default function Table() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTicker, setSelectedTicker] = useState<string | null>(null);
-  // Function to handle search query changes
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value.toLowerCase());
-  };
 
   // Add a click handler to set the selected ticker
   const handleTickerClick = (ticker: string) => {
@@ -56,8 +52,8 @@ export default function Table() {
   };
   // Filtered stocks based on search query
   const filteredStocks = stocks.filter(
-      (stock) =>
-          stock.company.toLowerCase().includes(searchQuery) || stock.ticker.toLowerCase().includes(searchQuery)
+    (stock) =>
+      stock.company.toLowerCase().includes(searchQuery) || stock.ticker.toLowerCase().includes(searchQuery)
   );
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -210,112 +206,109 @@ export default function Table() {
   };
 
   return (
-      // <div style={{ maxWidth: '80%', margin: '0 auto' }}>
-      //   <button onClick={() => setIsModalOpen(true)} className="btn btn-primary mb-4">
-      //     Add New Stock
-      //   </button>
-      //
-      //   <input
-      //       type="text"
-      //       placeholder="Search by ticker or company..."
-      //       value={searchQuery}
-      //       onChange={handleSearchChange}
-      //       className="input input-bordered w-full mb-4"
-      //   />
+    // <div style={{ maxWidth: '80%', margin: '0 auto' }}>
+    //   <button onClick={() => setIsModalOpen(true)} className="btn btn-primary mb-4">
+    //     Add New Stock
+    //   </button>
+    //
+    //   <input
+    //       type="text"
+    //       placeholder="Search by ticker or company..."
+    //       value={searchQuery}
+    //       onChange={handleSearchChange}
+    //       className="input input-bordered w-full mb-4"
+    //   />
 
-      <div style={{ maxWidth: '80%', margin: '0 auto' }}>
-        {/* Search bar and add button container */}
-        <div style={{ display: 'flex', marginBottom: '1rem' }}>
-          {/* Search input */}
-          <input
-              type="text"
-              placeholder="Search by ticker or company..."
-              value={searchQuery}
-              onChange={handleSearchChange}
-              style={{ flexGrow: 1, marginRight: '0.5rem' }} // Search input takes up remaining space
-              className="input input-bordered"
-          />
-          {/* Add new stock button */}
-          <button onClick={() => setIsModalOpen(true)} className="btn btn-primary" style={{ width: 'auto' }}>
-            Add New Stock
-          </button>
-        </div>
+    <div style={{ maxWidth: '80%', margin: '0 auto' }}>
+      {/* Search bar and add button container */}
+      <div style={{ display: 'flex', marginBottom: '1rem' }} className='mt-6'>
+        {/* Search input */}
+        <input type="text" name="ticker" placeholder="Search by ticker or company" value={newStockInput.ticker} onChange={handleInputChange} className="input input-bordered w-full mb-2" style={{ textTransform: 'capitalize' }} />
+        {/* Add new stock button */}
+        <button onClick={() => setIsModalOpen(true)} className="btn btn-primary ml-2" style={{ width: 'auto' }}>
+          Add New Stock
+        </button>
+      </div>
 
-        {isModalOpen && (
-            <div className="modal modal-open">
-              <div className="modal-box">
-                <h3 className="font-bold text-lg">Add a New Stock</h3>
-                <input type="text" name="ticker" placeholder="Ticker Symbol" value={newStockInput.ticker} onChange={handleInputChange} className="input input-bordered w-full mb-2" />
-                <input type="number" name="volume" placeholder="Volume" value={newStockInput.volume} onChange={handleInputChange} className="input input-bordered w-full mb-2" />
-                {/* Repeat for other fields */}
-                <div className="modal-action">
-                  <button onClick={handleAddStock} className="btn btn-primary">Add</button>
-                  <button onClick={() => setIsModalOpen(false)} className="btn">Cancel</button>
-                </div>
-              </div>
+      {isModalOpen && (
+        <div className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">Add a New Stock</h3>
+            <input type="text" name="ticker" placeholder="Ticker Symbol" value={newStockInput.ticker} onChange={handleInputChange} className="input input-bordered w-full mb-2" />
+            <input type="number" name="volume" placeholder="Volume" value={newStockInput.volume} onChange={handleInputChange} className="input input-bordered w-full mb-2" />
+            {/* Repeat for other fields */}
+            <div className="modal-action">
+              <button onClick={handleAddStock} className="btn btn-primary">Add</button>
+              <button onClick={() => setIsModalOpen(false)} className="btn">Cancel</button>
             </div>
-        )}
+          </div>
+        </div>
+      )}
+      <div className='flex flex-row'>
         <div className="overflow-x-auto" style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
-          <table className="table w-full" style={{ tableLayout: 'fixed' }}>
+          <table className="table w-full table-pin-cols" style={{ tableLayout: 'fixed' }}>
             {/* Table head */}
             <thead>
-            <tr>
-              <th></th>
-              <th>Ticker Symbol</th>
-              <th>Company Name</th>
-              <th>Bought-In Price</th>
-              <th>Current Price</th>
-              <th>Value</th>
-              <th>Change %</th>
-              <th>Sentiment Score</th>
-              <th>Category</th>
-              <th>Volume</th>
-              <th>Actions</th>
-            </tr>
+              <tr>
+                <th>#</th>
+                <th>Ticker</th>
+                <th>Name</th>
+                <th>Bought-In</th>
+                <th>Current</th>
+                <th>Value</th>
+                <th>Change</th>
+                <th>Change %</th>
+                <th>Sentiment</th>
+                <th>Volume</th>
+                <th>Actions</th>
+              </tr>
             </thead>
             <tbody>
-            {filteredStocks.length > 0 ? (
+              {filteredStocks.length > 0 ? (
                 filteredStocks.map((stock) => (
-                    <tr key={stock.id}>
-                      <th>{stock.id}</th>
-                      <td onClick={() => handleTickerClick(stock.ticker)}>{stock.ticker}</td>
-                      <td>{stock.company}</td>
-                      <td>${stock.boughtInPrice.toFixed(2)}</td>
-                      <td>${stock.currentPrice.toFixed(2)}</td>
-                      <td>${stock.totalValue}</td>
-                      <td>{stock.changePercent}%</td>
-                      <td>{stock.sentiment}</td>
-                      <td>{stock.category}</td>
-                      <td>{stock.volume}</td>
+                  <tr key={stock.id}>
+                    <th>{stock.id}</th>
+                    <td onClick={() => handleTickerClick(stock.ticker)}>{stock.ticker}</td>
+                    <td>{stock.company.split(" ")[0]}</td>
+                    <td>${stock.boughtInPrice.toFixed(2)}</td>
+                    <td>${stock.currentPrice.toFixed(2)}</td>
+                    <td>${stock.totalValue}</td>
+                    <td>{stock.change}</td>
+                    <td>{stock.changePercent}%</td>
+                    <td>{stock.sentiment}</td>
+                    <td>{stock.volume}</td>
 
-                      <td>
-                        <button onClick={() => handleTickerClick(stock.ticker)} className="btn btn-sm btn-ghost mr-2">
+                    <td>
+                      <div className='flex flex-row items-center'>
+                        <button onClick={() => handleTickerClick(stock.ticker)} className="btn btn-sm btn-ghost">
                           <i className="fas fa-chart-line"></i>
                         </button>
                         <button onClick={() => handleDeleteStock(stock.ticker)} className="btn btn-error btn-xs text-custom-red">
                           <i className="fas fa-times"></i>
                         </button>
-                      </td>
-                    </tr>
+                      </div>
+                    </td>
+                  </tr>
                 ))
-            ) : (
+              ) : (
                 <tr>
                   <td colSpan={10} className="text-center">
                     No stocks found.
                   </td>
                 </tr>
-            )}
+              )}
             </tbody>
           </table>
         </div>
-        <div className="charts-container" style={{ display: 'flex', justifyContent: 'space-around' }}>
-          <div style={{ width: '50%' }}>
+        <div className="charts-container" style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+          <div>
             <EquityPieChart stocks={filteredStocks} />
           </div>
-          <div style={{ width: '80%' }}>
+          <div>
             {selectedTicker && <StockHistoryGraph ticker={selectedTicker} />}
           </div>
         </div>
       </div>
+    </div>
   );
 }

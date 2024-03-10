@@ -6,7 +6,6 @@ import Gainer from './Gainer';
 
 const TopGainers = () => {
   const [data, setData] = useState([]);
-
   useEffect(() => {
     const fetchData = async () => {
       const key = 'VRF428VYVZ9DUYOW'

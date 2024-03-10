@@ -46,14 +46,14 @@ const StockNews: React.FC = () => {
     return (
         <div className="flex flex-col items-center p-5">
             <TopGainers />
-            <div className="w-full max-w-4xl mt-5">
+            <div className="w-full mt-5">
                 <h1 className="text-3xl font-bold text-red-800 mb-4">News</h1>
                 {isLoading ? (
                     <p className="text-center">Loading news...</p>
                 ) : error ? (
                     <p className="text-red-500">Error: {error}</p>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {createNewsCards(data)}
                     </div>
                 )}
@@ -65,15 +65,14 @@ const StockNews: React.FC = () => {
 const createNewsCards = (data: NewsArticle[]) => {
     if (!Array.isArray(data)) return null;
     return data.map((news_article, i) => (
-        <a href={news_article.url} className="block hover:bg-gray-100 p-3 rounded-lg shadow" key={i}>
+        <a href={news_article.url} className="block hover:bg-gray-100 rounded-lg" key={i}>
             <div className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-full">
                 {news_article.banner_image && (
                     <img src={news_article.banner_image} alt="News banner" className="w-full h-48 object-cover" />
                 )}
                 <div className="p-4 flex flex-col flex-grow">
                     <div>
-                        <h3 className="text-lg font-bold mb-2">{news_article.title}</h3>
-                        <p className="text-gray-700 text-sm flex-grow">{news_article.summary}</p>
+                        <h3 className="text-md font-bold mb-2">{news_article.title.substring(0, 70) + '...'}</h3>
                     </div>
                     <div className="mt-2">
                         <div className="text-center">
