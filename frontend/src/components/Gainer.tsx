@@ -5,8 +5,10 @@ function Gainer(props: any) {
 
   return (
 
-    <div className="card w-80 p-6 border" style={{ backgroundColor: props.backgroundColor, 
-                                                   color: props.color }}>
+    <div className="card w-80 p-6 border" style={{
+      backgroundColor: props.backgroundColor,
+      color: props.color
+    }}>
       <div className="text-left">
         <h1 className=""></h1>{props.ticker}
         <br></br>
