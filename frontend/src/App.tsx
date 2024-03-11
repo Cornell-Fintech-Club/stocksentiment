@@ -7,6 +7,8 @@ import AboutUs from './pages/AboutUs';
 import AnalysisPage from "./pages/AnalysisPage";
 import Login from "./components/Login"
 import SignUp from './components/SignUp';
+import ProfilePage from "./pages/ProfilePage"
+import SettingsPage from "./pages/SettingsPage"; 
 
 
 function App() {
@@ -21,6 +23,8 @@ function App() {
           <Route path="/aboutus" element={<AboutUs />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </BrowserRouter>
       <link

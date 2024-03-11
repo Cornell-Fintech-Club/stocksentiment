@@ -63,3 +63,8 @@
 .align-r {
   text-align: right;
 }
+
+.logout-link:hover { 
+  background-color: red; 
+  color: white; 
+}
