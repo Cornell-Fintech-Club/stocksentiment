@@ -8,8 +8,8 @@ import AnalysisPage from "./pages/AnalysisPage";
 import Login from "./components/Login"
 import SignUp from './components/SignUp';
 import ProfilePage from "./pages/ProfilePage"
-import SettingsPage from "./pages/SettingsPage"; 
-
+import SettingsPage from "./pages/SettingsPage";
+import authUser from "./components/NavBar";
 
 function App() {
   return (
