@@ -1,4 +1,4 @@
-export default function Profile() {
+export default function Settings() {
   return (
     <div className="settings">
       <h1>Settings Page</h1>
