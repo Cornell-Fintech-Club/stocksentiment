@@ -68,3 +68,19 @@
   background-color: red; 
   color: white; 
 }
+
+.people-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  justify-content: center;
+  max-width: calc(200px * 3 + 20px * 2);
+  margin: 0 auto;
+
+}
+
+.person-card {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
