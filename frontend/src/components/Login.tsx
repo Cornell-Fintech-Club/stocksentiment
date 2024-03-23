@@ -1,7 +1,11 @@
 import { signInWithEmailAndPassword, signInWithRedirect } from "firebase/auth";
+import { initializeApp } from "firebase/app";
 import { useState } from "react";
 import { Navigate, useLocation } from "react-router-dom"
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
+import { doc, getFirestore } from "firebase/firestore";
+import { setDoc } from "firebase/firestore";
+
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -40,8 +44,11 @@ export default function Login() {
                 <input type="password" className="grow bg-base-100" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
               </label>
             </div>
+            <a href="./SignUp" className="text-xs text-gray-600 hover:underline hover:text-blue-600">Don't Have An Account?</a>
+            &nbsp;
             <a href="#" className="text-xs text-gray-600 hover:underline hover:text-blue-600">Forget Password?</a>
             <div>
+
               <button className="btn btn-active btn-primary">Login</button>
             </div>
           </form>

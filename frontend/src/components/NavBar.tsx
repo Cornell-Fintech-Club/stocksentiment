@@ -63,7 +63,7 @@ const NavBar = () => {
                                         </li>
                                     </Link>
                                     <Link to="/settings"><li><a>Settings</a></li></Link>
-                                    <li><a className="logout-link" onClick={logout}>Logout</a></li>
+                                    <Link to="/aboutus"><li><a className="logout-link" onClick={logout}>Logout</a></li></Link>
                                 </ul>
                             </div>
                             ) : (<Link to="/login"><a className="btn btn-outline btn-primary">Login</a>
