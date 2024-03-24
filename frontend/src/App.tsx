@@ -9,6 +9,7 @@ import Login from "./components/Login"
 import SignUp from './components/SignUp';
 import ProfilePage from "./pages/ProfilePage"
 import SettingsPage from "./pages/SettingsPage"; 
+import Contact from "./pages/Contact";
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
       </BrowserRouter>
       <link
