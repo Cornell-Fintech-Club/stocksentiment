@@ -3,6 +3,11 @@ import axios from 'axios';
 import EquityPieChart from './EquityPieChart';
 import StockHistoryGraph from './StockHistoryGraph';
 import { fetch_news } from './js-sentiment-model';
+import { arrayRemove, arrayUnion, doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
+import { auth, db } from '../firebase';
+import { userInfo } from 'os';
+import TickerInput from './TickerInput';
+import { query } from 'express';
 
 interface IStock {
   id: number;
@@ -24,7 +29,7 @@ interface INewStockInput {
   company: string;
   price: string;
   change: string;
-    category: string;
+  category: string;
   changePercent: string;
   sentiment: string;
   volume: string;
@@ -32,6 +37,8 @@ interface INewStockInput {
 
 export default function Table() {
   const [stocks, setStocks] = useState<IStock[]>([]);
+
+
   const [newStockInput, setNewStockInput] = useState<INewStockInput>({
     ticker: '',
     company: '',
@@ -46,6 +53,7 @@ export default function Table() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTicker, setSelectedTicker] = useState<string | null>(null);
 
+
   // Add a click handler to set the selected ticker
   const handleTickerClick = (ticker: string) => {
     setSelectedTicker(ticker);
@@ -58,12 +66,36 @@ export default function Table() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewStockInput({ ...newStockInput, [name]: value });
+    console.log(newStockInput)
   };
 
   // Function to delete a stock
   const handleDeleteStock = (ticker: string) => {
     setStocks(stocks.filter(stock => stock.ticker !== ticker));
+    if (auth.currentUser) {
+      updateDoc(doc(db, "users", auth.currentUser.uid), {
+        stocks: arrayRemove({ name: ticker })
+      });
+    }
   };
+
+  const handleGetStocks = async (uid: string) => {
+    const docRef = doc(db, "users", uid);
+    const userDoc = await getDoc(docRef);
+    try {
+      // Accessing specific field from the document data
+      let docStocks = [];
+      docStocks = userDoc.data()!.stocks;
+      let name = docStocks[0].name
+      let vol = docStocks[0].vol
+      newStockInput.ticker = name
+      newStockInput.volume = vol
+      console.log(newStockInput);
+      // addStock();
+    } catch (error) {
+      console.error('Error getting document:', error);
+    }
+  }
 
   // Function to update current prices
   const updatePrices = async () => {
@@ -92,6 +124,9 @@ export default function Table() {
 
   // Effect to update prices on mount and at set intervals
   useEffect(() => {
+    if (auth.currentUser) {
+      handleGetStocks(auth.currentUser.uid);
+    }
     updatePrices();
     const interval = setInterval(updatePrices, 60000); // Update every minute
     return () => clearInterval(interval);
@@ -114,6 +149,87 @@ export default function Table() {
   };
 
 
+  const addStock = async () => {
+    // Construct the API endpoint with the API key and ticker symbol
+    const query = newStockInput.ticker;
+    const volume = newStockInput.volume;
+    const apiKey = 'VRF428VYVZ9DUYOW';
+    const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${query}&apikey=${apiKey}`;
+
+    const companyUrl = `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${query}&apikey=${apiKey}`;
+    const companyResponse = await axios.get(companyUrl);
+    const companyName = companyResponse.data.Name;
+
+    // Fetch stock data from Alpha Vantage
+    const response = await axios.get(url);
+
+
+    // Check if the API response is valid
+    if (response.data['Global Quote']) {
+
+      const quote = response.data['Global Quote'];
+      const sentiment = await fetch_news(quote['01. symbol']);
+      const formattedSentiment = parseFloat(sentiment.toFixed(3));
+      const price = parseFloat(quote['05. price'])
+      const newStock: IStock = {
+        id: stocks.length + 1,
+        ticker: quote['01. symbol'],
+        company: companyName, // Alpha Vantage does not provide the company name in GLOBAL_QUOTE
+        boughtInPrice: price, // use the input price as the boughtInPrice
+        currentPrice: parseFloat(quote['05. price']), // fetched current price
+        change: parseFloat(quote['09. change']),
+        changePercent: parseFloat(quote['10. change percent']),
+        category: getCategory(formattedSentiment),
+        sentiment: formattedSentiment, //
+        volume: parseInt(newStockInput.volume, 10),
+        totalValue: price * parseFloat(volume),
+        link: '#' //
+      };
+
+      // Update stocks state
+      setStocks([...stocks, newStock]);
+      if (auth.currentUser) {
+        await updateDoc(doc(db, "users", auth.currentUser.uid), {
+          stocks: arrayUnion({ name: newStock.ticker, vol: newStock.volume })
+        });
+      }
+
+      // Reset the input form
+      setNewStockInput({
+        ticker: '',
+        company: '',
+        price: '',
+        change: '',
+        changePercent: '',
+        category: '',
+        sentiment: '',
+        volume: '',
+      });
+      // Close the modal
+      setIsModalOpen(false);
+    } else {
+      const generateRandomStock = (ticker: string): IStock => {
+        const randomPrice = (Math.random() * 1000).toFixed(2); // Random price between 0 and 1000
+        return {
+          id: Math.floor(Math.random() * 100000), // Assuming id is not used for anything else critical
+          ticker: ticker,
+          company: `Random Company ${Math.floor(Math.random() * 1000)}`, // Random company name
+          boughtInPrice: parseFloat(randomPrice),
+          currentPrice: parseFloat(randomPrice),
+          change: parseFloat((Math.random() * 100).toFixed(2)),
+          changePercent: parseFloat((Math.random() * 100).toFixed(2)),
+          sentiment: parseFloat((Math.random() * 100).toFixed(2)),
+          volume: Math.floor(Math.random() * 10000),
+          totalValue: parseFloat((parseFloat(randomPrice) * parseFloat(volume)).toFixed(2)),
+          category: "N/A",
+          link: '#'
+        };
+      };
+      setStocks([...stocks, generateRandomStock(newStockInput.ticker)]);
+      // alert('Failed to fetch stock data. Please try again.');
+      setIsModalOpen(false);
+    }
+  }
 
   // Function to add new stock
   const handleAddStock = async () => {
@@ -124,80 +240,7 @@ export default function Table() {
         return;
       }
 
-      // Construct the API endpoint with the API key and ticker symbol
-      const query = newStockInput.ticker;
-      const volume = newStockInput.volume;
-      const apiKey = 'VRF428VYVZ9DUYOW';
-      const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${query}&apikey=${apiKey}`;
-
-      const companyUrl = `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${query}&apikey=${apiKey}`;
-      const companyResponse = await axios.get(companyUrl);
-      const companyName = companyResponse.data.Name;
-
-      // Fetch stock data from Alpha Vantage
-      const response = await axios.get(url);
-
-
-      // Check if the API response is valid
-      if (response.data['Global Quote']) {
-
-        const quote = response.data['Global Quote'];
-        const sentiment = await fetch_news(quote['01. symbol']);
-        const formattedSentiment = parseFloat(sentiment.toFixed(3));
-        const price = parseFloat(quote['05. price'])
-        const newStock: IStock = {
-          id: stocks.length + 1,
-          ticker: quote['01. symbol'],
-          company: companyName, // Alpha Vantage does not provide the company name in GLOBAL_QUOTE
-          boughtInPrice: price, // use the input price as the boughtInPrice
-          currentPrice: parseFloat(quote['05. price']), // fetched current price
-          change: parseFloat(quote['09. change']),
-          changePercent: parseFloat(quote['10. change percent']),
-          category: getCategory(formattedSentiment),
-          sentiment: formattedSentiment, //
-          volume: parseInt(newStockInput.volume, 10),
-          totalValue: price * parseFloat(volume),
-          link: '#' //
-        };
-
-        // Update stocks state
-        setStocks([...stocks, newStock]);
-
-        // Reset the input form
-        setNewStockInput({
-          ticker: '',
-          company: '',
-          price: '',
-          change: '',
-          changePercent: '',
-          category: '',
-          sentiment: '',
-          volume: '',
-        });
-        // Close the modal
-        setIsModalOpen(false);
-      } else {
-        const generateRandomStock = (ticker: string): IStock => {
-          const randomPrice = (Math.random() * 1000).toFixed(2); // Random price between 0 and 1000
-          return {
-            id: Math.floor(Math.random() * 100000), // Assuming id is not used for anything else critical
-            ticker: ticker,
-            company: `Random Company ${Math.floor(Math.random() * 1000)}`, // Random company name
-            boughtInPrice: parseFloat(randomPrice),
-            currentPrice: parseFloat(randomPrice),
-            change: parseFloat((Math.random() * 100).toFixed(2)),
-            changePercent: parseFloat((Math.random() * 100).toFixed(2)),
-            sentiment: parseFloat((Math.random() * 100).toFixed(2)),
-            volume: Math.floor(Math.random() * 10000),
-            totalValue: parseFloat((parseFloat(randomPrice) * parseFloat(volume)).toFixed(2)),
-            category: "N/A",
-            link: '#'
-          };
-        };
-        setStocks([...stocks, generateRandomStock(newStockInput.ticker)]);
-        // alert('Failed to fetch stock data. Please try again.');
-        setIsModalOpen(false);
-      }
+      addStock();
     } catch (error) {
       // Handle the error
       console.error('Error fetching stock data:', error);
