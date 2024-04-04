@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from '@firebase/firestore'
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { doc, getDoc, collection, getDocs } from 'firebase/firestore'; // Add these imports
 
 const config = {
   apiKey: "AIzaSyB_LuxpWXdMfqyyLg16QBQh1eDxxcpoZT0",
@@ -17,3 +18,14 @@ export const db = getFirestore(app);
 export const firestore = getFirestore(app)
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
+
+export const fetchUserStocks = async (userId) => {
+  const userDocRef = doc(db, 'users', userId);
+  const stocksCollectionRef = collection(userDocRef, 'stocks');
+  const snapshot = await getDocs(stocksCollectionRef);
+  const stocks = [];
+  snapshot.forEach(doc => {
+    stocks.push({ id: doc.id, ...doc.data() });
+  });
+  return stocks;
+};
