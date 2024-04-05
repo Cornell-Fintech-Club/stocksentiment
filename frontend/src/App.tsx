@@ -9,8 +9,8 @@ import Login from "./components/Login"
 import SignUp from './components/SignUp';
 import ProfilePage from "./pages/ProfilePage"
 import SettingsPage from "./pages/SettingsPage"; 
+import authUser from "./components/NavBar";
 import ContactPage from "./pages/ContactPage"; 
-
 
 function App() {
   return (
