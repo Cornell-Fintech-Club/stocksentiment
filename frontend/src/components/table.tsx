@@ -5,7 +5,7 @@ import StockHistoryGraph from './StockHistoryGraph';
 import { fetch_news } from './js-sentiment-model';
 import { auth, fetchUserStocks } from '../firebase';
 import { db } from '../firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, doc, deleteDoc, setDoc } from 'firebase/firestore';
 
 interface IStock {
   id: number;
@@ -46,23 +46,23 @@ export default function Table() {
     volume: '',
   });
 
- useEffect(() => {
-  const unsubscribe = auth.onAuthStateChanged(user => {
-    console.log('Auth state changed. User:', user);
-    if (user) {
-      fetchUserStocks(user.uid).then(fetchedStocks => {
-        console.log('Fetched stocks:', fetchedStocks);
-        setStocks(fetchedStocks);
-      }).catch(error => {
-        console.error("Error fetching user stocks:", error);
-      });
-    } else {
-      setStocks([]);
-    }
-  });
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      console.log('Auth state changed. User:', user);
+      if (user) {
+        fetchUserStocks(user.uid).then(fetchedStocks => {
+          console.log('Fetched stocks:', fetchedStocks);
+          setStocks(fetchedStocks);
+        }).catch(error => {
+          console.error("Error fetching user stocks:", error);
+        });
+      } else {
+        setStocks([]);
+      }
+    });
 
-  return () => unsubscribe();
-}, []);
+    return () => unsubscribe();
+  }, []);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -83,8 +83,12 @@ export default function Table() {
   };
 
   // Function to delete a stock
-  const handleDeleteStock = (ticker: string) => {
-    setStocks(stocks.filter(stock => stock.ticker !== ticker));
+  const handleDeleteStock = async (ticker: string) => {
+    if (auth.currentUser) {
+      setStocks(stocks.filter(stock => stock.ticker !== ticker));
+      const user = auth.currentUser;
+      await deleteDoc(doc(db, `users/${user.uid}/stocks`, ticker));
+    }
   };
 
   // Function to update current prices
@@ -135,78 +139,78 @@ export default function Table() {
     }
   };
 
-const handleAddStock = async () => {
-  const user = auth.currentUser;
-  if (!user) {
-    alert('You must be logged in to add a stock.');
-    return;
-  }
-
-  // Construct the API endpoint with the API key and ticker symbol
-  const query = newStockInput.ticker;
-  const volume = newStockInput.volume;
-  const apiKey = 'VRF428VYVZ9DUYOW';
-  const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${query}&apikey=${apiKey}`;
-
-  const companyUrl = `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${query}&apikey=${apiKey}`;
-  
-  try {
-    // Fetch stock data from Alpha Vantage
-    const [quoteResponse, companyResponse] = await Promise.all([
-      axios.get(url),
-      axios.get(companyUrl)
-    ]);
-
-    const quoteData = quoteResponse.data['Global Quote'];
-    const companyName = companyResponse.data.Name;
-
-    if (quoteData) {
-      const sentiment = await fetch_news(quoteData['01. symbol']);
-      const formattedSentiment = parseFloat(sentiment.toFixed(3));
-      const price = parseFloat(quoteData['05. price']);
-
-      const newStock: IStock = {
-        id: Date.now(), 
-        ticker: quoteData['01. symbol'],
-        company: companyName,
-        boughtInPrice: price,
-        currentPrice: price,
-        change: parseFloat(quoteData['09. change']),
-        changePercent: parseFloat(quoteData['10. change percent']),
-        category: getCategory(formattedSentiment),
-        sentiment: formattedSentiment,
-        volume: parseInt(volume),
-        totalValue: price * parseInt(volume),
-        link: '#', 
-      };
-
-      // Add a new document to Firestore in the 'stocks' sub-collection of the current user
-      await addDoc(collection(db, `users/${user.uid}/stocks`), newStock);
-
-      // Update stocks state with new stock data
-      setStocks((currentStocks) => [...currentStocks, newStock]);
-
-      // Reset the input form
-      setNewStockInput({
-        ticker: '',
-        company: '',
-        price: '',
-        change: '',
-        category: '',
-        changePercent: '',
-        sentiment: '',
-        volume: '',
-      });
-      setIsModalOpen(false); // Close the modal
-    } else {
-      alert('Stock data not found.');
+  const handleAddStock = async () => {
+    const user = auth.currentUser;
+    if (!user) {
+      alert('You must be logged in to add a stock.');
+      return;
     }
-  } catch (error) {
-    // Handle the error
-    console.error('Error fetching stock data or adding stock: ', error);
-    alert('There was an error processing your request.');
-  }
-};
+
+    // Construct the API endpoint with the API key and ticker symbol
+    const query = newStockInput.ticker;
+    const volume = newStockInput.volume;
+    const apiKey = 'VRF428VYVZ9DUYOW';
+    const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${query}&apikey=${apiKey}`;
+
+    const companyUrl = `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${query}&apikey=${apiKey}`;
+
+    try {
+      // Fetch stock data from Alpha Vantage
+      const [quoteResponse, companyResponse] = await Promise.all([
+        axios.get(url),
+        axios.get(companyUrl)
+      ]);
+
+      const quoteData = quoteResponse.data['Global Quote'];
+      const companyName = companyResponse.data.Name;
+
+      if (quoteData) {
+        const sentiment = await fetch_news(quoteData['01. symbol']);
+        const formattedSentiment = parseFloat(sentiment.toFixed(3));
+        const price = parseFloat(quoteData['05. price']);
+
+        const newStock: IStock = {
+          id: new Date().getMinutes(),
+          ticker: quoteData['01. symbol'],
+          company: companyName,
+          boughtInPrice: price,
+          currentPrice: price,
+          change: parseFloat(quoteData['09. change']),
+          changePercent: parseFloat(quoteData['10. change percent']),
+          category: getCategory(formattedSentiment),
+          sentiment: formattedSentiment,
+          volume: parseInt(volume),
+          totalValue: Number((price * parseInt(volume)).toFixed(3)),
+          link: '#',
+        };
+
+        // Add a new document to Firestore in the 'stocks' sub-collection of the current user
+        await setDoc(doc(db, `users/${user.uid}/stocks`, newStock.ticker), newStock);
+
+        // Update stocks state with new stock data
+        setStocks((currentStocks) => [...currentStocks, newStock]);
+
+        // Reset the input form
+        setNewStockInput({
+          ticker: '',
+          company: '',
+          price: '',
+          change: '',
+          category: '',
+          changePercent: '',
+          sentiment: '',
+          volume: '',
+        });
+        setIsModalOpen(false); // Close the modal
+      } else {
+        alert('Stock data not found.');
+      }
+    } catch (error) {
+      // Handle the error
+      console.error('Error fetching stock data or adding stock: ', error);
+      alert('There was an error processing your request.');
+    }
+  };
 
   return (
     // <div style={{ maxWidth: '80%', margin: '0 auto' }}>
@@ -253,7 +257,7 @@ const handleAddStock = async () => {
             {/* Table head */}
             <thead>
               <tr>
-                <th>#</th>
+                <th>#Minute</th>
                 <th>Ticker</th>
                 <th>Name</th>
                 <th>Bought-In</th>
