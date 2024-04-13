@@ -1,6 +1,50 @@
-import React from 'react';
+import { auth, db } from "../firebase";
+import {doc, getFirestore } from "firebase/firestore";
+import { getDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
 
 export default function Settings() {
+  const [user, setUser] = useState(auth.currentUser);
+  const [userData, setUserData] = useState<any>(null);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!user) return;
+
+      try {
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const userDataFromFirestore = docSnap.data();
+          setUserData(userDataFromFirestore); // Set userData state with Firestore data
+        } else {
+          console.log("Document does not exist");
+        }
+      } catch (error) {
+        console.error("Error fetching document:", error);
+      }
+    };
+
+    fetchUserData();
+  }, [user]);
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="container mx-auto px-4 py-8 flex justify-center">
       <div className="flex w-full max-w-4xl">
@@ -31,7 +75,7 @@ export default function Settings() {
               <div className="flex-1">
                 <div className="form-control mb-6">
                   <label className="label text-sm font-medium text-gray-700">
-                    <span className="label-text">Name</span>
+                    <span className="label-text">{userData.name}</span>
                   </label>
                   <input type="text" placeholder="Your name" className="input input-bordered w-full text-base" />
                 </div>
@@ -152,9 +196,6 @@ export default function Settings() {
                 <button className="btn btn-primary">Update Username</button>
               </div>
             </div>
-
-            {/* Placeholder for Passkeys Subsection */}
-            {/* ... */}
 
             {/* Two-Factor Authentication Subsection */}
             <div className="mb-6">
