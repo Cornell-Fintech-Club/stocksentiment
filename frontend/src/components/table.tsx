@@ -8,7 +8,6 @@ import { db } from '../firebase';
 import { collection, doc, deleteDoc, setDoc } from 'firebase/firestore';
 
 interface IStock {
-  id: number;
   ticker: string;
   company: string;
   boughtInPrice: number;
@@ -163,14 +162,12 @@ export default function Table() {
 
       const quoteData = quoteResponse.data['Global Quote'];
       const companyName = companyResponse.data.Name;
-
-      if (quoteData) {
+      if (companyName) {
         const sentiment = await fetch_news(quoteData['01. symbol']);
         const formattedSentiment = parseFloat(sentiment.toFixed(3));
         const price = parseFloat(quoteData['05. price']);
 
         const newStock: IStock = {
-          id: new Date().getMinutes(),
           ticker: quoteData['01. symbol'],
           company: companyName,
           boughtInPrice: price,
@@ -257,7 +254,6 @@ export default function Table() {
             {/* Table head */}
             <thead>
               <tr>
-                <th>#Minute</th>
                 <th>Ticker</th>
                 <th>Name</th>
                 <th>Bought-In</th>
@@ -273,8 +269,7 @@ export default function Table() {
             <tbody>
               {filteredStocks.length > 0 ? (
                 filteredStocks.map((stock) => (
-                  <tr key={stock.id}>
-                    <th>{stock.id}</th>
+                  <tr key={stock.ticker}>
                     <td onClick={() => handleTickerClick(stock.ticker)}>{stock.ticker}</td>
                     <td>{stock.company.split(" ")[0]}</td>
                     <td>${stock.boughtInPrice.toFixed(2)}</td>
