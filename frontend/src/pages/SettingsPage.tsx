@@ -1,49 +1,31 @@
 import { auth, db } from "../firebase";
-import {doc, getFirestore } from "firebase/firestore";
+import { doc } from "firebase/firestore";
 import { getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
 export default function Settings() {
-  const [user, setUser] = useState(auth.currentUser);
   const [userData, setUserData] = useState<any>(null);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        setUser(user);
-      } else {
-        setUser(null);
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
     const fetchUserData = async () => {
-      if (!user) return;
+      if (auth.currentUser) {
+        const userId = auth.currentUser.uid;
+        const userDocRef = doc(db, "users", userId);
 
-      try {
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          const userDataFromFirestore = docSnap.data();
-          setUserData(userDataFromFirestore); // Set userData state with Firestore data
-        } else {
-          console.log("Document does not exist");
+        try {
+          const docSnap = await getDoc(userDocRef);
+          if (docSnap.exists()) {
+            setUserData(docSnap.data());
+          } else {
+            console.log("No such document exists!");
+          }
+        } catch (error) {
+          console.error("Error fetching document:", error);
         }
-      } catch (error) {
-        console.error("Error fetching document:", error);
       }
     };
-
     fetchUserData();
-  }, [user]);
-
-  if (!user) {
-    return <div>Loading...</div>;
-  }
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-8 flex justify-center">
@@ -68,23 +50,25 @@ export default function Settings() {
 
         {/* Main content area */}
         <div className="w-3/4 p-4">
-        <section id="personal-information">
+          <section id="personal-information">
             <h2 className="text-xl font-bold mb-4">Personal Information</h2>
             <div className="flex gap-4">
               {/* Form Section */}
               <div className="flex-1">
                 <div className="form-control mb-6">
                   <label className="label text-sm font-medium text-gray-700">
-                    <span className="label-text">{userData.name}</span>
+                    <span className="label-text">Name</span>
                   </label>
-                  <input type="text" placeholder="Your name" className="input input-bordered w-full text-base" />
+                  <input type="text" placeholder="Your name" className="input input-bordered w-full text-base" value={userData?.name || ""}
+                    onChange={(e) => console.log("Input value:", e.target.value)}
+                    />
                 </div>
 
                 <div className="form-control mb-6">
                   <label className="label text-sm font-medium text-gray-700">
                     <span className="label-text">Public Email</span>
                   </label>
-                  <input type="email" placeholder="name@example.com" className="input input-bordered w-full text-base" />
+                  <input type="email" placeholder="name@example.com" className="input input-bordered w-full text-base" value={userData?.email || ""} />
                 </div>
 
                 <div className="form-control mb-6">
@@ -124,16 +108,16 @@ export default function Settings() {
                     </svg>
                   </label>
                   {/* Hidden file input for triggering file selection when edit icon is clicked */}
-                  <input type="file" id="file-upload" className="hidden"/>
+                  <input type="file" id="file-upload" className="hidden" />
                 </div>
               </div>
             </div>
           </section>
-                    {/* ... Other sections above ... */}
+          {/* ... Other sections above ... */}
           {/* Security and Authentication Section */}
           <section id="security-authentication">
             <h2 className="text-xl font-bold mb-4">Security and Authentication</h2>
-            
+
             {/* Change Password Subsection */}
             <div className="mb-6">
               <h3 className="text-lg font-semibold mb-2">Change Password</h3>
@@ -201,7 +185,7 @@ export default function Settings() {
             <div className="mb-6">
               <h3 className="text-lg font-semibold mb-2">Two-factor authentication</h3>
               <div className="border-b-2 border-gray-200 mb-4" />
-              
+
               <div className="text-center p-4">
                 <span className="block text-gray-700 text-sm font-bold mb-2">Two-factor authentication is not enabled yet.</span>
                 <p className="text-gray-600 mb-6">Two-factor authentication adds an additional layer of security to your account by requiring more than just a password to sign in.</p>
@@ -212,7 +196,6 @@ export default function Settings() {
               </div>
             </div>
           </section>
-          {/* ... Other sections below ... */}
         </div>
       </div>
     </div>

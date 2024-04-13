@@ -19,7 +19,9 @@ export default function SignUp() {
       async (userCredential) => {
         const docRef = await setDoc(doc(db, "users", userCredential.user.uid), {
           email: userCredential.user.email,
-          name: name
+          name: name,
+          bio: "",
+          pronouns: ""
         });
         console.log(userCredential)
         setLoggedIn(true)
