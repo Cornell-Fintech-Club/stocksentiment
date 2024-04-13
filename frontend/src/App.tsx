@@ -10,7 +10,7 @@ import SignUp from './components/SignUp';
 import ProfilePage from "./pages/ProfilePage"
 import SettingsPage from "./pages/SettingsPage"; 
 import Contact from "./pages/Contact";
-
+import authUser from "./components/NavBar";
 
 function App() {
   return (
