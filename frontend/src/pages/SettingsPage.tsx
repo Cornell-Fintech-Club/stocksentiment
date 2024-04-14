@@ -38,13 +38,6 @@ export default function Settings() {
             <li><a href="#portfolio-preferences">Portfolio Preferences</a></li>
             <li><a href="#notification-settings">Notification Settings</a></li>
             <li><a href="#communication-preferences">Communication Preferences</a></li>
-            <li><a href="#tax-settings">Tax Settings</a></li>
-            <li><a href="#data-privacy-and-security">Data Privacy</a></li>
-            <li><a href="#integration-settings">Integration Settings</a></li>
-            <li><a href="#accessibility-options">Accessibility Options</a></li>
-            <li><a href="#reporting-and-analytics">Reporting and Analytics</a></li>
-            <li><a href="#trading-settings">Trading Settings</a></li>
-            <li><a href="#theme-and-appearance">Theme and Appearance</a></li>
           </ul>
         </div>
 
@@ -73,26 +66,9 @@ export default function Settings() {
 
                 <div className="form-control mb-6">
                   <label className="label text-sm font-medium text-gray-700">
-                    <span className="label-text">Bio</span>
-                  </label>
-                  <textarea placeholder="Tell us about yourself" className="textarea textarea-bordered text-base"></textarea>
-                </div>
-
-                <div className="form-control mb-6">
-                  <label className="label text-sm font-medium text-gray-700">
                     <span className="label-text">Pronouns</span>
                   </label>
                   <input type="text" placeholder="e.g., He/Him, They/Them" className="input input-bordered w-full text-base" />
-                </div>
-
-                <div className="form-control mb-6">
-                  <label className="label text-sm font-medium text-gray-700">
-                    <span className="label-text">Social URLs</span>
-                  </label>
-                  <input type="url" placeholder="Facebook URL" className="input input-bordered w-full mb-2 text-base" />
-                  <input type="url" placeholder="Twitter URL" className="input input-bordered w-full mb-2 text-base" />
-                  <input type="url" placeholder="LinkedIn URL" className="input input-bordered w-full mb-2 text-base" />
-                  <input type="url" placeholder="Instagram URL" className="input input-bordered w-full text-base" />
                 </div>
               </div>
               {/* Profile Picture Section */}
