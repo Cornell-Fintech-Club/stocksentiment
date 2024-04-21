@@ -1,7 +1,33 @@
 import { Link } from "react-router-dom";
 import Table from "../components/table";
+import PersonCard from '../components/PersonCard';
+
+interface Person {
+    name: string;
+    image: string;
+    role: string; 
+    email: string;
+    linkedin: string;
+    website: string;
+  }
+  
 
 export default function AboutUs() {
+    const people: Person[] = [
+        // Placeholder data
+        { name: "Diego Marques", image: "/Headshots/Diego.jpg", role: "Software Engineer", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
+        { name: "Emna Sadkaoui", image: "/Headshots/EmnaSadkaoui.png", role: "Project Manager", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
+        { name: "Bhuwan Bhattarai", image: "/Headshots/BhuwanBhattarai.png", role: "Software Engineer", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
+        { name: "Aneesh Naresh", image: "/Headshots/black.png", role: "Software Engineer", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
+        { name: "Sweksha Mehta", image: "/Headshots/black.png", role: "Project Manager", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
+        { name: "Kevin Biliguun", image: "/Headshots/black.png", role: "Software Engineer", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
+        { name: "Kevin Hu", image: "/Headshots/black.png", role: "Software Engineer", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
+        { name: "Eddie Ramirez", image: "/Headshots/black.png", role: "Software Engineer", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
+        { name: "Neil Gidwani", image: "/Headshots/black.png", role: "Software Engineer", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
+        { name: "Goretti Muriithi", image: "/Headshots/black.png", role: "Business Analyst", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
+        { name: "Nikhil Berry", image: "/Headshots/black.png", role: "Business Analyst", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
+        // Add more entries as needed
+      ];
     return (
         <div className="h-full">
             <div className="hero min-h-screen">
@@ -65,13 +91,19 @@ export default function AboutUs() {
                     <br></br>
                     <br></br>
                     <br></br>
-                    <h1 className="font-bold tracking-tight text-primary sm:text-4xl ">
+                    <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-6xl ">
                         Members
                     </h1>
-                    <p className="mt-6 text-lg leading-8 text-gray-600">PM: <a className="underline" href="https://www.linkedin.com/in/emna-sadkaoui-336450224/">Emna</a></p>
-                    <p className="mt-6 text-lg leading-8 text-gray-600">TPMs: Diego and <a className="underline" href="https://www.linkedin.com/in/neil-gidwani/">Neil</a></p>
-                    <p className="mt-6 text-lg leading-8 text-gray-600">Business: Farhan, Goretti, and <a className="underline" href="https://www.linkedin.com/in/khu22/">Kevin</a></p>
-                    <p className="mt-6 text-lg leading-8 text-gray-600">Devs: Kevin, Chloe, Rishi, and Zachary</p>
+                    <div className="contact" style={{ padding: '20px' }}>
+                        <section>
+                            <h2></h2>
+                            <div className="people-grid">
+                            {people.map((person) => (
+                                <PersonCard key={person.name} person={person} />
+                            ))}
+                            </div>
+                        </section>
+                        </div>
                 </div>
             </div>
         </div >
