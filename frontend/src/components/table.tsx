@@ -66,6 +66,7 @@ export default function Table() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTicker, setSelectedTicker] = useState<string | null>(null);
+  const [graphButton, setGraphButton] = useState(false);
 
   // Add a click handler to set the selected ticker
   const handleTickerClick = (ticker: string) => {
@@ -87,6 +88,17 @@ export default function Table() {
       setStocks(stocks.filter(stock => stock.ticker !== ticker));
       const user = auth.currentUser;
       await deleteDoc(doc(db, `users/${user.uid}/stocks`, ticker));
+    }
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value.toLowerCase());
+  };
+
+  const toggleButton = (ticker: string) => {
+    handleTickerClick(ticker);
+    if (ticker === selectedTicker || !graphButton) {
+      setGraphButton(prevCheck => !prevCheck);
     }
   };
 
@@ -227,7 +239,7 @@ export default function Table() {
       {/* Search bar and add button container */}
       <div style={{ display: 'flex', marginBottom: '1rem' }} className='mt-6'>
         {/* Search input */}
-        <input type="text" name="ticker" placeholder="Search by ticker or company" value={newStockInput.ticker} onChange={handleInputChange} className="input input-bordered w-full mb-2" style={{ textTransform: 'capitalize' }} />
+        <input type="text" name="ticker" placeholder="Search by ticker or company" value={searchQuery} onChange={handleSearchChange} className="input input-bordered w-full mb-2" style={{ textTransform: 'capitalize' }} />
         {/* Add new stock button */}
         <button onClick={() => setIsModalOpen(true)} className="btn btn-primary ml-2" style={{ width: 'auto' }}>
           Add New Stock
@@ -282,7 +294,7 @@ export default function Table() {
 
                     <td>
                       <div className='flex flex-row items-center'>
-                        <button onClick={() => handleTickerClick(stock.ticker)} className="btn btn-sm btn-ghost">
+                        <button onClick={() => toggleButton(stock.ticker)} className="btn btn-sm btn-ghost">
                           <i className="fas fa-chart-line"></i>
                         </button>
                         <button onClick={() => handleDeleteStock(stock.ticker)} className="btn btn-error btn-xs text-custom-red">
@@ -306,11 +318,12 @@ export default function Table() {
           <div>
             <EquityPieChart stocks={filteredStocks} />
           </div>
-          <div>
-            {selectedTicker && <StockHistoryGraph ticker={selectedTicker} />}
-          </div>
+          {graphButton ?
+            (<div>
+              {selectedTicker && <StockHistoryGraph ticker={selectedTicker} />}
+            </div>) : <></>}
         </div>
       </div>
-    </div>
+    </div >
   );
 }
