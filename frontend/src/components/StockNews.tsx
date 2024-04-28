@@ -1,7 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import NewsCard from './NewsCard';
-import TopGainers from './TopGainers';
 
 interface NewsArticle {
     url: string;
@@ -27,8 +26,8 @@ const StockNews: React.FC = () => {
     const fetchData = async () => {
         setIsLoading(true);
         try {
-            const apiKey = "VRF428VYVZ9DUYOW"; // Use environment variable for API key
-            const res = await axios.get(`https://www.alphavantage.co/query?function=NEWS_SENTIMENT&apikey=${apiKey}`);
+            const apiKey = "VRF428VYVZ9DUYOW";
+            const res = await axios.get(`https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=financial_markets&apikey=${apiKey}`);
             if (Array.isArray(res.data.feed)) {
                 setData(res.data.feed);
             } else {
@@ -44,9 +43,8 @@ const StockNews: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col items-center p-5">
-            <TopGainers />
-            <div className="w-full mt-5">
+        <div className="flex flex-col items-center px-5">
+            <div className="w-full">
                 <h1 className="text-3xl font-bold text-red-800 mb-4">News</h1>
                 {isLoading ? (
                     <p className="text-center">Loading news...</p>
@@ -54,7 +52,7 @@ const StockNews: React.FC = () => {
                     <p className="text-red-500">Error: {error}</p>
                 ) : (
                     <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {createNewsCards(data)}
+                        {createNewsCards(data, false)}
                     </div>
                 )}
             </div>
@@ -62,75 +60,65 @@ const StockNews: React.FC = () => {
     );
 };
 
-const createNewsCards = (data: NewsArticle[]) => {
+export const StockNewsRow: React.FC = () => {
+    const [data, setData] = useState<NewsArticle[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string>('');
+
+    useEffect(() => {
+        fetchData();
+        const interval = setInterval(fetchData, 60000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const fetchData = async () => {
+        setIsLoading(true);
+        try {
+            const apiKey = "VRF428VYVZ9DUYOW";
+            const res = await axios.get(`https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=financial_markets&apikey=${apiKey}`);
+            if (Array.isArray(res.data.feed)) {
+                setData(res.data.feed.slice(0, 5));
+            } else {
+                setError('Data format issue: Feed is not an array');
+                console.error('Data format issue: Feed is not an array');
+            }
+        } catch (error) {
+            setError('Error fetching stock data');
+            console.error('Error fetching stock data:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="flex flex-col items-center mx-5 my-5 bg-white rounded-xl">
+            <div className="w-full p-4">
+                <div className='flex flex-row space-between'>
+                    <h1 className="text-2xl font-bold text-red-800 ml-2 text-left">News</h1>
+                </div>
+                {isLoading ? (
+                    <p className="text-center">Loading news...</p>
+                ) : error ? (
+                    <p className="text-red-500">Error: {error}</p>
+                ) : (
+                    <div className="w-full overflow-hidden">
+                        <div className="flex row inline-block space-x-4 py-2">
+                            {createNewsCards(data, true)}
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+const createNewsCards = (data: NewsArticle[], isRow: boolean) => {
     if (!Array.isArray(data)) return null;
     return data.map((news_article, i) => (
-        <a href={news_article.url} className="block hover:bg-gray-100 rounded-lg" key={i}>
-            <div className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-full">
-                {news_article.banner_image && (
-                    <img src={news_article.banner_image} alt="News banner" className="w-full h-48 object-cover" />
-                )}
-                <div className="p-4 flex flex-col flex-grow">
-                    <div>
-                        <h3 className="text-md font-bold mb-2">{news_article.title.substring(0, 70) + '...'}</h3>
-                    </div>
-                    <div className="mt-2">
-                        <div className="text-center">
-                            <div className="bg-red-100 text-red-800 rounded-full px-3 py-1 text-sm font-semibold whitespace-nowrap mb-1">
-                                {news_article.topics.length > 0 ? news_article.topics[0].topic : ''}
-                            </div>
-                        </div>
-                        <div className="text-center">
-                            <div className="bg-gray-100 text-gray-800 rounded-full px-3 py-1 text-sm font-semibold whitespace-nowrap">
-                                {formatDate(news_article.time_published)}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <a href={news_article.url} className={`block hover:bg-gray-100 rounded-lg w-full h-full`} key={i}>
+            <NewsCard isRow={isRow} news_article={news_article} />
         </a>
     ));
 };
-
-const formatDate = (dateString: string) => {
-    const year = dateString.slice(0, 4);
-    const month = dateString.slice(4, 6);
-    const day = dateString.slice(6, 8);
-    const hours = dateString.slice(9, 11);
-    const minutes = dateString.slice(11, 13);
-
-    // Convert month number to the full month name
-    const months = [
-        'January', 'February', 'March', 'April', 'May', 'June', 'July',
-        'August', 'September', 'October', 'November', 'December'
-    ];
-    const monthName = months[parseInt(month) - 1];
-
-    // Determine AM/PM based on hours
-    const amPm = parseInt(hours) >= 12 ? 'pm' : 'am';
-
-    // Convert hours to 12-hour format
-    const formattedHours = (parseInt(hours) % 12) || 12;
-
-    const formattedDate = `${monthName} ${day}, ${year} ${formattedHours}:${minutes}${amPm}`;
-    return formattedDate;
-};
-
-
-
-const getMonthName = (month: number) => {
-    const monthNames = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-    return monthNames[month];
-};
-
-
-// const formatDate = (dateString: string) => {
-//     const options = { year: 'numeric', month: 'short', day: 'numeric' };
-//     const formattedDate = new Date(dateString).toLocaleDateString(undefined, options);
-//     return formattedDate;
-// };
 
 export default StockNews;

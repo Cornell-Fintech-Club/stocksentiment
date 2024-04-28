@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  background-color: #F8F9FD;
 }
 
 .App-logo {
@@ -67,4 +68,9 @@
 .logout-link:hover { 
   background-color: red; 
   color: white; 
+}
+
+.bn-prime {
+  background-color: #8B0000;
+  color: white;
 }

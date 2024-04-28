@@ -38,29 +38,25 @@ const StockHistoryGraph: React.FC<IStockDetailGraphProps> = ({ ticker }) => {
                 const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker}&outputsize=compact&apikey=${apiKey}`;
                 const response = await axios.get(url);
                 const timeSeries: TimeSeriesData = response.data['Time Series (Daily)'] as TimeSeriesData;
+                const filteredLabels = Object.keys(timeSeries).sort().filter((_, index) => index % 10 === 0);
+                const filteredData = filteredLabels.map(label => parseFloat(timeSeries[label]['4. close']));
                 const chartData: ChartData = {
-                    labels: Object.keys(timeSeries).sort(),
+                    labels: filteredLabels,
                     datasets: [
                         {
                             label: 'Closing Price',
-                            // Assert the correct type within the map function
-                            data: Object.values(timeSeries).map((dailyData: DailyTimeSeries) => parseFloat(dailyData['4. close'])),
+                            data: filteredData,
                             fill: false,
                             borderColor: 'rgb(172, 25, 25)',
                             tension: 0.1
                         }
                     ]
                 };
-                chartData.labels.reverse();
-                chartData.datasets[0].data.reverse();
-                // Loop through the time series to populate our chart data
-
                 setHistoricalData(chartData);
             } catch (error) {
                 console.error('Error fetching historical data:', error);
             }
         };
-
         if (ticker) {
             fetchHistoricalData();
         }
@@ -70,7 +66,16 @@ const StockHistoryGraph: React.FC<IStockDetailGraphProps> = ({ ticker }) => {
         return <div>Loading...</div>;
     }
 
-    return <Line data={historicalData} />;
+    const options = {
+        maintainAspectRatio: false,
+        responsive: true,
+    };
+
+    return (
+        <div className='py-3 h-full w-full'>
+            <Line data={historicalData} options={options} />
+        </div>
+    );
 };
 
 export default StockHistoryGraph;

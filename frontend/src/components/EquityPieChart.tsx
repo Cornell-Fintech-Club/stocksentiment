@@ -18,9 +18,11 @@ const EquityPieChart: React.FC<EquityPieChartProps> = ({ stocks }) => {
                 label: 'Stock Value',
                 data: stocks.map(stock => stock.totalValue),
                 backgroundColor: [
-                    '#FF6384',
-                    '#36A2EB',
-                    '#FFCE56',
+                    '#AC1919',
+                    '#D34645',
+                    '#EB7676',
+                    '#FFA7A7',
+                    '#F9D5E0'
                     // ... add more colors as needed
                 ],
                 hoverOffset: 4,

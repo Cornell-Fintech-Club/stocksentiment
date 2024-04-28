@@ -5,7 +5,7 @@ function Gainer(props: any) {
 
   return (
 
-    <div className="card w-80 p-6 border" style={{
+    <div className="card w-80 h-32 p-3" style={{
       backgroundColor: props.backgroundColor,
       color: props.color
     }}>
@@ -18,7 +18,6 @@ function Gainer(props: any) {
 
       <div className="text-right">
         <h1 className="text-lg font-small">{props.change_percentage}</h1>
-        <div >(Volume: {props.volume})</div>
       </div>
 
     </div >

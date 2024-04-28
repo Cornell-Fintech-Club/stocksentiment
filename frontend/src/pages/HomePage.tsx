@@ -4,6 +4,8 @@ import Table from "../components/table";
 import TickerInput from "../components/TickerInput";
 import { firestore } from '../firebase'
 import { collection, getDocs } from '@firebase/firestore'
+import TopGainers from "../components/TopGainers";
+import { StockNewsRow } from "../components/StockNews";
 
 export default function HomePage() {
   useEffect(() => {
@@ -24,7 +26,7 @@ export default function HomePage() {
 
   return (
     <div>
-      {/*<SearchBar />*/}
+      <TopGainers />
       <Table />
     </div >
   );
