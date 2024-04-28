@@ -66,6 +66,7 @@ export default function Table() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTicker, setSelectedTicker] = useState<string | null>(null);
+  const [graphButton, setGraphButton] = useState(false);
 
   // Add a click handler to set the selected ticker
   const handleTickerClick = (ticker: string) => {
@@ -87,6 +88,17 @@ export default function Table() {
       setStocks(stocks.filter(stock => stock.ticker !== ticker));
       const user = auth.currentUser;
       await deleteDoc(doc(db, `users/${user.uid}/stocks`, ticker));
+    }
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value.toLowerCase());
+  };
+
+  const toggleButton = (ticker: string) => {
+    handleTickerClick(ticker);
+    if (ticker === selectedTicker || !graphButton) {
+      setGraphButton(prevCheck => !prevCheck);
     }
   };
 
@@ -145,67 +157,96 @@ export default function Table() {
       return;
     }
 
-    // Construct the API endpoint with the API key and ticker symbol
-    const query = newStockInput.ticker;
-    const volume = newStockInput.volume;
-    const apiKey = 'VRF428VYVZ9DUYOW';
-    const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${query}&apikey=${apiKey}`;
+    // Check if the stock already exists in the portfolio
+    const existingStockIndex = stocks.findIndex(stock => stock.ticker === newStockInput.ticker);
 
-    const companyUrl = `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${query}&apikey=${apiKey}`;
+    if (existingStockIndex !== -1) {
+      // If the stock already exists, update its volume
+      const existingStock = stocks[existingStockIndex];
+      const updatedVolume = existingStock.volume + parseInt(newStockInput.volume);
+      const updatedTotalValue = existingStock.currentPrice * updatedVolume;
 
-    try {
-      // Fetch stock data from Alpha Vantage
-      const [quoteResponse, companyResponse] = await Promise.all([
-        axios.get(url),
-        axios.get(companyUrl)
-      ]);
+      const updatedStock = {
+        ...existingStock,
+        volume: updatedVolume,
+        totalValue: Number(updatedTotalValue.toFixed(3)),
+      };
 
-      const quoteData = quoteResponse.data['Global Quote'];
-      const companyName = companyResponse.data.Name;
-      if (companyName) {
-        const sentiment = await fetch_news(quoteData['01. symbol']);
-        const formattedSentiment = parseFloat(sentiment.toFixed(3));
-        const price = parseFloat(quoteData['05. price']);
+      // Update the stock in Firestore
+      await setDoc(doc(db, `users/${user.uid}/stocks`, existingStock.ticker), updatedStock);
 
-        const newStock: IStock = {
-          ticker: quoteData['01. symbol'],
-          company: companyName,
-          boughtInPrice: price,
-          currentPrice: price,
-          change: parseFloat(quoteData['09. change']),
-          changePercent: parseFloat(quoteData['10. change percent']),
-          category: getCategory(formattedSentiment),
-          sentiment: formattedSentiment,
-          volume: parseInt(volume),
-          totalValue: Number((price * parseInt(volume)).toFixed(3)),
-          link: '#',
-        };
+      // Update the stock in the state
+      setStocks(prevStocks => {
+        const updatedStocks = [...prevStocks];
+        updatedStocks[existingStockIndex] = updatedStock;
+        return updatedStocks;
+      });
 
-        // Add a new document to Firestore in the 'stocks' sub-collection of the current user
-        await setDoc(doc(db, `users/${user.uid}/stocks`, newStock.ticker), newStock);
+      setIsModalOpen(false); // Close the modal
 
-        // Update stocks state with new stock data
-        setStocks((currentStocks) => [...currentStocks, newStock]);
+    } else {
+      // Construct the API endpoint with the API key and ticker symbol
+      const query = newStockInput.ticker;
+      const volume = newStockInput.volume;
+      const apiKey = 'VRF428VYVZ9DUYOW';
+      const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${query}&apikey=${apiKey}`;
 
-        // Reset the input form
-        setNewStockInput({
-          ticker: '',
-          company: '',
-          price: '',
-          change: '',
-          category: '',
-          changePercent: '',
-          sentiment: '',
-          volume: '',
-        });
-        setIsModalOpen(false); // Close the modal
-      } else {
-        alert('Stock data not found.');
+      const companyUrl = `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${query}&apikey=${apiKey}`;
+
+      try {
+        // Fetch stock data from Alpha Vantage
+        const [quoteResponse, companyResponse] = await Promise.all([
+          axios.get(url),
+          axios.get(companyUrl)
+        ]);
+
+        const quoteData = quoteResponse.data['Global Quote'];
+        const companyName = companyResponse.data.Name;
+        if (companyName) {
+          const sentiment = await fetch_news(quoteData['01. symbol']);
+          const formattedSentiment = parseFloat(sentiment.toFixed(3));
+          const price = parseFloat(quoteData['05. price']);
+
+          const newStock: IStock = {
+            ticker: quoteData['01. symbol'],
+            company: companyName,
+            boughtInPrice: price,
+            currentPrice: price,
+            change: parseFloat(quoteData['09. change']),
+            changePercent: parseFloat(quoteData['10. change percent']),
+            category: getCategory(formattedSentiment),
+            sentiment: formattedSentiment,
+            volume: parseInt(volume),
+            totalValue: Number((price * parseInt(volume)).toFixed(3)),
+            link: '#',
+          };
+
+          // Add a new document to Firestore in the 'stocks' sub-collection of the current user
+          await setDoc(doc(db, `users/${user.uid}/stocks`, newStock.ticker), newStock);
+
+          // Update stocks state with new stock data
+          setStocks((currentStocks) => [...currentStocks, newStock]);
+
+          // Reset the input form
+          setNewStockInput({
+            ticker: '',
+            company: '',
+            price: '',
+            change: '',
+            category: '',
+            changePercent: '',
+            sentiment: '',
+            volume: '',
+          });
+          setIsModalOpen(false); // Close the modal
+        } else {
+          alert('Stock data not found.');
+        }
+      } catch (error) {
+        // Handle the error
+        console.error('Error fetching stock data or adding stock: ', error);
+        alert('There was an error processing your request.');
       }
-    } catch (error) {
-      // Handle the error
-      console.error('Error fetching stock data or adding stock: ', error);
-      alert('There was an error processing your request.');
     }
   };
 
@@ -227,7 +268,7 @@ export default function Table() {
       {/* Search bar and add button container */}
       <div style={{ display: 'flex', marginBottom: '1rem' }} className='mt-6'>
         {/* Search input */}
-        <input type="text" name="ticker" placeholder="Search by ticker or company" value={newStockInput.ticker} onChange={handleInputChange} className="input input-bordered w-full mb-2" style={{ textTransform: 'capitalize' }} />
+        <input type="text" name="ticker" placeholder="Search by ticker or company" value={searchQuery} onChange={handleSearchChange} className="input input-bordered w-full mb-2" style={{ textTransform: 'capitalize' }} />
         {/* Add new stock button */}
         <button onClick={() => setIsModalOpen(true)} className="btn btn-primary ml-2" style={{ width: 'auto' }}>
           Add New Stock
@@ -282,7 +323,7 @@ export default function Table() {
 
                     <td>
                       <div className='flex flex-row items-center'>
-                        <button onClick={() => handleTickerClick(stock.ticker)} className="btn btn-sm btn-ghost">
+                        <button onClick={() => toggleButton(stock.ticker)} className="btn btn-sm btn-ghost">
                           <i className="fas fa-chart-line"></i>
                         </button>
                         <button onClick={() => handleDeleteStock(stock.ticker)} className="btn btn-error btn-xs text-custom-red">
@@ -306,11 +347,12 @@ export default function Table() {
           <div>
             <EquityPieChart stocks={filteredStocks} />
           </div>
-          <div>
-            {selectedTicker && <StockHistoryGraph ticker={selectedTicker} />}
-          </div>
+          {graphButton ?
+            (<div>
+              {selectedTicker && <StockHistoryGraph ticker={selectedTicker} />}
+            </div>) : <></>}
         </div>
       </div>
-    </div>
+    </div >
   );
 }

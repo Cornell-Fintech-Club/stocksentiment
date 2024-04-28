@@ -42,7 +42,7 @@ const StockHistoryGraph: React.FC<IStockDetailGraphProps> = ({ ticker }) => {
                     labels: Object.keys(timeSeries).sort(),
                     datasets: [
                         {
-                            label: 'Closing Price',
+                            label: ticker,
                             // Assert the correct type within the map function
                             data: Object.values(timeSeries).map((dailyData: DailyTimeSeries) => parseFloat(dailyData['4. close'])),
                             fill: false,
