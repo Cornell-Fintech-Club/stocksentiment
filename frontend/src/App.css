@@ -68,3 +68,81 @@
   background-color: red; 
   color: white; 
 }
+
+.people-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  justify-content: center;
+  max-width: calc(200px * 3 + 20px * 2);
+  margin: 0 auto;
+
+}
+
+.person-card {
+  width: 14rem;
+  height: 19rem;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  color: white;
+  box-shadow: 0 10px 30px 5px rgba(0, 0, 0, 0.2);
+}
+
+.person-card img { 
+  position: absolute;
+  object-fit: cover;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0.9;
+  transition: opacity .2s ease-out;
+}
+
+.person-card .person-header { 
+  position: absolute;
+  inset: auto auto 30px 30px;
+  margin: 0;
+  transition: transform .3s ease-out;
+  text-align: left;
+}
+
+.person-card .person-header h2 { 
+  margin: 0;
+  font-weight: normal;
+  text-transform: uppercase;
+}
+
+.person-card .person-header p { 
+  margin: 0;
+  font-size: smaller;
+}
+
+.person-card .person-links { 
+  position: absolute;
+  opacity: 0;
+  max-width: 80%;
+  transition: opacity .3s ease-out;
+  inset: auto auto 50px 30px;
+  text-align: left;
+  font-size: smaller;
+}
+
+.person-card:hover .person-header { 
+  transform: translateY(-95px);
+}
+
+.person-card:hover .person-links { 
+  opacity: 1; 
+  transition: opacity .5s .1s ease-in; 
+}
+
+.person-card:hover img {
+  opacity: 1; 
+  transition: opacity .3s ease-in;
+}
+
+

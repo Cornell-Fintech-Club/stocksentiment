@@ -11,6 +11,7 @@ import ProfilePage from "./pages/ProfilePage"
 import SettingsPage from "./pages/SettingsPage"; 
 import Contact from "./pages/Contact";
 import authUser from "./components/NavBar";
+import ContactPage from "./pages/ContactPage"; 
 
 function App() {
   return (
