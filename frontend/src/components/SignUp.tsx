@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState } from "react";
 import { Navigate, useLocation } from "react-router-dom"
 import { auth, db } from "../firebase";
@@ -9,22 +9,54 @@ import { setDoc } from "firebase/firestore";
 export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [verifyPassword, setVerifyPassword] = useState("");
   const [name, setName] = useState("");
   const [userLoggedIn, setLoggedIn] = useState(false)
-
+  const [errorMessage, setErrorMessage] = useState("")
 
   const signUp = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
+
+    if (name === "") {
+      setErrorMessage("Invalid or missing name");
+      throw new Error("missing-name");
+    }
+    else if (password !== verifyPassword) {
+      setErrorMessage("Passwords don't match");
+      throw new Error("verify-password-fail");
+    }
+
     createUserWithEmailAndPassword(auth, email, password).then(
       async (userCredential) => {
         const docRef = await setDoc(doc(db, "users", userCredential.user.uid), {
           email: userCredential.user.email,
-          name: name
+          name: name,
+          bio: "",
+          pronouns: ""
         });
         console.log(userCredential)
         setLoggedIn(true)
-      }).catch((error) => { console.log(error) })
+      }).catch((error) => {
+        console.log(error);
+        handleError(error);
+      })
   }
+
+  const handleError = (error: any) => {
+    if (error.code === 'auth/email-already-in-use') {
+      setErrorMessage("Email already in use");
+    }
+    else if (error.code === 'auth/missing-password') {
+      setErrorMessage("Missing password");
+    }
+    else if (error.code === 'auth/invalid-email') {
+      setErrorMessage("Invalid email");
+    }
+    else {
+      setErrorMessage("Error logging in");
+    }
+  }
+
   return (
     <>{userLoggedIn ? <Navigate to={"/"} replace={true} /> :
       <div className="relative flex flex-col justify-center h-screen overflow-hidden">
@@ -64,9 +96,14 @@ export default function SignUp() {
               </label>
               <label className="input input-bordered flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4 opacity-70"><path fillRule="evenodd" d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z" clipRule="evenodd" /></svg>
-                <input type="password" className="grow bg-base-100" placeholder="Re-type Password" />
+                <input type="password" className="grow bg-base-100" placeholder="Re-type Password" value={verifyPassword} onChange={(e) => setVerifyPassword(e.target.value)} />
               </label>
             </div>
+            {errorMessage !== "" ? (<div role="alert" className="alert alert-warning">
+              <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+              <span>Warning: {errorMessage}</span>
+            </div>) : <></>
+            }
             <div>
               <button className="btn btn-active btn-primary">Sign Up</button>
             </div>
