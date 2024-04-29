@@ -3,14 +3,13 @@ import { initializeApp } from "firebase/app";
 import { useState } from "react";
 import { Navigate, useLocation } from "react-router-dom"
 import { auth, db } from "../firebase";
-import { doc, getFirestore } from "firebase/firestore";
-import { setDoc } from "firebase/firestore";
 
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userLoggedIn, setLoggedIn] = useState(false)
+  const [errorM, setErrorM] = useState("")
 
   const logIn = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
@@ -18,8 +17,30 @@ export default function Login() {
       (userCredential) => {
         console.log(userCredential);
         setLoggedIn(true)
-      },).catch((error) => { console.log(error) })
+      },).catch((error) => {
+        console.log(error);
+        errorMessage(error);
+      })
   }
+
+  const errorMessage = (error: any) => {
+    if (error.code === "auth/invalid-credential") {
+      setErrorM("Invalid Email or Password");
+    }
+    else if (error.code === 'auth/missing-password') {
+      setErrorM("Missing Password");
+    }
+    else if (error.code === 'auth/invalid-email') {
+      setErrorM("Invalid Email");
+    }
+    else if (error.code === 'auth/user-not-found') {
+      setErrorM("User Not Found");
+    }
+    else {
+      setErrorM("Error");
+    }
+  }
+
   return (
     <>{userLoggedIn ? <Navigate to={"/"} replace={true} /> :
       <div className="relative flex flex-col justify-center h-screen overflow-hidden">
@@ -47,8 +68,12 @@ export default function Login() {
             <a href="./SignUp" className="text-xs text-gray-600 hover:underline hover:text-blue-600">Don't Have An Account?</a>
             &nbsp;
             <a href="#" className="text-xs text-gray-600 hover:underline hover:text-blue-600">Forget Password?</a>
+            {errorM !== "" ? (<div role="alert" className="alert alert-warning">
+              <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+              <span>Warning: {errorM}</span>
+            </div>) : <></>
+            }
             <div>
-
               <button className="btn btn-active btn-primary">Login</button>
             </div>
           </form>

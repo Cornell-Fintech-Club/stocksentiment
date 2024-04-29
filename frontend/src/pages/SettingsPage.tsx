@@ -26,7 +26,6 @@ export default function Settings() {
     };
     fetchUserData();
   }, []);
-
   return (
     <div className="container mx-auto px-4 py-8 flex justify-center">
       <div className="flex w-full max-w-4xl">
