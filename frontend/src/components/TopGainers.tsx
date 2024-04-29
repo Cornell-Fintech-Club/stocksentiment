@@ -21,8 +21,10 @@ const TopGainers = () => {
     // OjJiZmUwZmNlYmM3ZjE4ODMxZWZlY2MyYzBmYjJhYWQ3
   }, []);
   return (
-    <div className="marquee">
-      <div className="flex row inline-block space-around">{createTopGainers(data)}</div>
+    <div className="mx-5 my-5 rounded-lg bg-white overflow-hidden">
+      <div className="marquee p-4">
+        <div className="flex row inline-block space-around">{createTopGainers(data)}</div>
+      </div>
     </div>
   )
 }
@@ -33,7 +35,7 @@ function determineTextColor(backgroundColor: string) {
 }
 
 function createTopGainers(data: string | any[]) {
-  const colors = ["white", "lightblue", "lightgreen", "lightcoral", "lightsalmon", "lightpink"]
+  const colors = ["#00A5E3", "lightblue", "lightgreen", "lightcoral", "lightsalmon", "lightpink"]
   const gainers = []
   if (!data || data.length === 0) {
     return null
@@ -51,9 +53,9 @@ function createTopGainers(data: string | any[]) {
         change_percentage={gainer.change_percentage}
         backgroundColor={gainerColor}
         color={textColor}
-      ></Gainer>
-
-    </div>);
+      />
+    </div>
+    );
   }
   return gainers;
 }

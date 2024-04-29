@@ -31,7 +31,7 @@ const NavBar = () => {
     return (
         <>
             {location.pathname != "/login" && location.pathname != "/signup" ?
-                (<div className="navbar bg-base-100 border">
+                (<div className="navbar bg-white border">
                     <div className="navbar-start">
                         {/* Replace the text with your logo */}
                         <Link to="https://www.cornellfintechclub.com/" className="btn btn-ghost normal-case text-xl">

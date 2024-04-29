@@ -19,29 +19,23 @@ function getMonthName(month: any) {
 }
 
 function NewsCard(props: any) {
-    const date = formatDate(props.date);
-    console.log(date)
-    var category = props.category
-    var headline = props.headline.substring(0, 50) + '...'
-    const summaryStartIndex = props.summary.indexOf("--");
-    const summaryToShow = summaryStartIndex !== -1 ? props.summary.substring(summaryStartIndex + 2) : props.summary;
-    var image = props.image == null ? "https://img.freepik.com/free-photo/abstract-surface-textures-white-concrete-stone-wall_74190-8189.jpg?w=1480&t=st=1700425379~exp=1700425979~hmac=e2944d96862c8f458b51358bd6796393b4dca4b7b1faa26d8d48c3d856bc4378" : props.image
 
     return (
-        <div className="flex bg-base-400 rounded-box my-2">
-            <div className="w-1/4 flex items-center justify-center">
-                <figure>
-                    <img className="object-contain h-[100px] w-full ml-3" src={image} />
-                </figure>
-            </div>
-            <div className="w-3/4 flex flex-col">
-                <p className="font-bold text-left text-base ml-6">{headline}</p>
-                <p className="text-left text-xs ml-6">{summaryToShow}</p>
-                <div className="flex flex-row-reverse bottom-0 mt-6 mr-2">
-                    <div className="badge badge-outline">{`${date}`}</div>
-                    {
-                        category == '' ? <div></div> : <div className="badge badge-outline mr-1">{category}</div>
-                    }
+        <div className={`bg-white rounded-lg ${props.isRow ? 'border-1 border-black' : 'border-none'} shadow-md overflow-hidden flex flex-col w-full h-full`}>
+            {props.news_article.banner_image && (
+                <img src={props.news_article.banner_image} alt="News banner" className={`w-full ${props.isRow ? 'h-40' : 'h-48'} object-cover`} />
+            )}
+            <div className="p-4 flex flex-col flex-grow">
+                <div className="flex justify-between">
+                    <div className="bg-gray-100 text-gray-800 rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap">
+                        {formatDate(props.news_article.time_published)}
+                    </div>
+                    <div className="bg-red-100 text-red-800 rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap">
+                        {props.news_article.topics.length > 0 ? props.news_article.topics[0].topic : ''}
+                    </div>
+                </div>
+                <div className='mt-2'>
+                    <h3 className={`font-bold ${props.isRow ? 'text-sm' : 'text-lg'}`}>{props.news_article.title.substring(0, 50) + '...'}</h3>
                 </div>
             </div>
         </div>
