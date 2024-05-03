@@ -3,7 +3,7 @@ import PersonCard from '../components/PersonCard';
 interface Person {
   name: string;
   image: string;
-  role: string; 
+  role: string;
   email: string;
   linkedin: string;
   website: string;
@@ -12,7 +12,7 @@ interface Person {
 export default function Contact() {
   const people: Person[] = [
     // Placeholder data
-    { name: "Diego Marques", image: "/Headshots/Diego.jpg", role: "Software Engineer", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
+    { name: "Diego Marques", image: "/Headshots/Diego.jpg", role: "Software Engineer", email: "dlm352@cornell.edu", linkedin: "https://www.linkedin.com/in/dmarques/", website: "https://diegomarques.netlify.app/" },
     { name: "Emna Sadkaoui", image: "/Headshots/EmnaSadkaoui.png", role: "Project Manager", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
     { name: "Bhuwan Bhattarai", image: "/Headshots/BhuwanBhattarai.png", role: "Software Engineer", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
     { name: "Aneesh Naresh", image: "/Headshots/black.png", role: "Software Engineer", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },

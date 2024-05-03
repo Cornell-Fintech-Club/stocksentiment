@@ -5,29 +5,29 @@ import PersonCard from '../components/PersonCard';
 interface Person {
     name: string;
     image: string;
-    role: string; 
+    role: string;
     email: string;
     linkedin: string;
     website: string;
-  }
-  
+}
+
 
 export default function AboutUs() {
     const people: Person[] = [
         // Placeholder data
-        { name: "Diego Marques", image: "/Headshots/Diego.jpg", role: "Software Engineer", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
-        { name: "Emna Sadkaoui", image: "/Headshots/EmnaSadkaoui.png", role: "Project Manager", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
-        { name: "Bhuwan Bhattarai", image: "/Headshots/BhuwanBhattarai.png", role: "Software Engineer", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
-        { name: "Aneesh Naresh", image: "/Headshots/black.png", role: "Software Engineer", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
-        { name: "Sweksha Mehta", image: "/Headshots/black.png", role: "Project Manager", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
-        { name: "Kevin Biliguun", image: "/Headshots/black.png", role: "Software Engineer", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
-        { name: "Kevin Hu", image: "/Headshots/black.png", role: "Software Engineer", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
-        { name: "Eddie Ramirez", image: "/Headshots/black.png", role: "Software Engineer", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
-        { name: "Neil Gidwani", image: "/Headshots/black.png", role: "Software Engineer", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
-        { name: "Goretti Muriithi", image: "/Headshots/black.png", role: "Business Analyst", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
-        { name: "Nikhil Berry", image: "/Headshots/black.png", role: "Business Analyst", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
+        { name: "Diego Marques", image: "/Headshots/Diego.jpg", role: "Software Engineer", email: "dlm352@cornell.edu", linkedin: "https://www.linkedin.com/in/dmarques/", website: "https://diegomarques.netlify.app/" },
+        { name: "Emna Sadkaoui", image: "/Headshots/EmnaSadkaoui.png", role: "Project Manager", email: "es798@cornell.edu", linkedin: "https://www.linkedin.com/in/emna-sadkaoui/", website: "https://www.google.com/" },
+        { name: "Bhuwan Bhattarai", image: "/Headshots/BhuwanBhattarai.png", role: "Software Engineer", email: "bb623@cornell.edu", linkedin: "https://www.linkedin.com/in/bhuwan-bhattarai/", website: "https://bhuwanbhattarai.com/" },
+        { name: "Aneesh Naresh", image: "/Headshots/cat.png", role: "Software Engineer", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
+        { name: "Sweksha Mehta", image: "/Headshots/Sweksha.jpeg", role: "Project Manager", email: "empty@example.com", linkedin: "https://www.linkedin.com/in/sweksha-mehta/", website: "https://www.google.com/" },
+        { name: "Kevin Biliguun", image: "/Headshots/cat.png", role: "Software Engineer", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
+        { name: "Kevin Hu", image: "/Headshots/kevinHu.jpg", role: "Software Engineer", email: "kh785@cornell.edu", linkedin: "https://www.linkedin.com/in/khu22/", website: "https://www.google.com/" },
+        { name: "Eddie Ramirez", image: "/Headshots/cat.png", role: "Software Engineer", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
+        { name: "Neil Gidwani", image: "/Headshots/cat.png", role: "Software Engineer", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
+        { name: "Goretti Muriithi", image: "/Headshots/goretti.jpg", role: "Business Analyst", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
+        { name: "Nikhil Berry", image: "/Headshots/cat.png", role: "Business Analyst", email: "empty@example.com", linkedin: "https://www.google.com/", website: "https://www.google.com/" },
         // Add more entries as needed
-      ];
+    ];
     return (
         <div className="h-full">
             <div className="hero min-h-screen">
@@ -98,12 +98,12 @@ export default function AboutUs() {
                         <section>
                             <h2></h2>
                             <div className="people-grid">
-                            {people.map((person) => (
-                                <PersonCard key={person.name} person={person} />
-                            ))}
+                                {people.map((person) => (
+                                    <PersonCard key={person.name} person={person} />
+                                ))}
                             </div>
                         </section>
-                        </div>
+                    </div>
                 </div>
             </div>
         </div >
